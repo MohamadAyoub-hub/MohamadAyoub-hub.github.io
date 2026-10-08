@@ -30,9 +30,9 @@
 
   /* Frost text */
   --paper:#eef3ff;
-  --muted:rgba(238,243,255,.62);
-  --muted-2:rgba(238,243,255,.4);
-  --muted-3:rgba(238,243,255,.18);
+  --muted:#cbd5eb;
+  --muted-2:#b5c2dc;
+  --muted-3:#a6b6d2;
 
   /* Lines */
   --line:rgba(238,243,255,.07);
@@ -991,12 +991,138 @@ section{position:relative;padding:110px 0}
   #preloader{display:none!important}
   #heroCanvas{display:none}
 }
+
+/* Readability, progressive enhancement and accessible interaction refinements. */
+:root{--dock-space:100px}
+html{scroll-padding-top:110px;scroll-padding-bottom:var(--dock-space)}
+section[id],main[id]{scroll-margin-top:110px}
+a,button,[role="button"]{touch-action:manipulation}
+a:focus-visible,button:focus-visible,[role="button"]:focus-visible,
+[tabindex="-1"]:focus-visible{outline:3px solid #83f0df;outline-offset:5px}
+.skip-link{position:fixed;top:10px;left:18px;z-index:11000;padding:14px 20px;
+  background:var(--paper);color:var(--ink);border-radius:12px;transform:translateY(-160%)}
+.skip-link:focus{transform:none}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+[hidden]{display:none!important}
+#preloader{display:none}
+html:not(.enhanced) .rv,html:not(.enhanced) .rv-s,html:not(.enhanced) .fu,
+html:not(.enhanced) .split .ch,html:not(.enhanced) .line-fade,
+html:not(.enhanced) .manifesto .statement .w{opacity:1;transform:none}
+html:not(.enhanced) .svc-body,html:not(.enhanced) .faq-a{max-height:none}
+html:not(.enhanced) .svc-head{cursor:default}
+.svc-row.open .svc-body,.faq-item.open .faq-a{max-height:none}
+.svc-head{outline-offset:-4px!important}
+.svc-body-inner,.sec-head .left,.case-top .info,.tier,.dash-main{min-width:0}
+.nav:focus-within{transform:translateX(-50%)}
+.nav-burger,.nav-cta{min-height:44px}
+.nav-burger{width:44px}
+.nav-mobile{visibility:hidden;overflow-y:auto;overscroll-behavior:contain;
+  padding-top:100px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));background:rgba(4,6,15,.97)}
+.nav-mobile.on{visibility:visible}
+.nav-mobile .cta{flex-shrink:0}
+.menu-open .mbar,.menu-open .fab,.menu-open .top-btn{visibility:hidden}
+.mbar,.fab,.top-btn{visibility:hidden}
+.mbar.on,.fab.on,.top-btn.on{visibility:visible}
+.mbar{bottom:calc(12px + env(safe-area-inset-bottom,0px));background:rgba(12,18,38,.96)}
+.mbar .m-ghost{flex:0 0 48px;padding:0;min-width:48px}
+.mbar svg{width:20px;height:20px}
+.fab{right:88px}
+.trust-wrap{padding-top:36px}
+.trust-bar{display:grid;grid-template-columns:auto 1fr;gap:24px;padding:28px}
+.trust-bar .sep{display:none}
+.trust-bar .lead{font-size:12px;color:var(--paper);letter-spacing:.12em}
+.trust-items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.trust-item{gap:10px}
+.trust-item .v{font-size:1.5rem;line-height:1.15}
+.trust-item .l{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  letter-spacing:0;text-transform:none;white-space:normal;line-height:1.55;color:var(--muted)}
+.brand-txt .sub{font-size:10px;letter-spacing:.08em;color:var(--muted)}
+.eyebrow,.svc-body-inner h4,.case-body h4{font-size:12px;letter-spacing:.13em}
+.about-cert .s,.demo-item .v,.testi .who .r,.footnote,.tier .per,.impact-cell .sub,
+.stat .l,.testi-note,.foot-bot{font-size:13px;line-height:1.6}
+.case-body .footnote{color:var(--muted)}
+.card p,.tier .desc,.tier li,.svc-body-inner li,.tl-step p,.faq-a p,
+.support .l p,.sec-head .right{font-size:15px;line-height:1.75}
+.kpi .lbl,.impact-cell .k{font-size:11px;letter-spacing:.1em}
+.dash-title,.dash-bottom,.term-top .p{font-size:12px}
+.dash-side .preview-item{display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border-radius:8px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.dash-side .preview-item.active{background:rgba(109,139,255,.14);color:var(--paper)}
+.dash-side .preview-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;flex:none}
+.demo-caption{font-size:13px;color:var(--muted);line-height:1.6;padding:14px 24px;
+  border-bottom:1px solid var(--line-2);background:rgba(4,6,15,.35)}
+.cta-mail{overflow-wrap:anywhere;max-width:100%}
+.motion-toggle{font-family:inherit;font-size:13px;min-height:44px;padding:10px 14px;
+  border:1px solid var(--line-3);border-radius:999px;color:var(--paper)}
+.motion-paused *, .motion-paused *::before,.motion-paused *::after{animation-play-state:paused!important}
+.motion-paused .rv,.motion-paused .rv-s,.motion-paused .fu,.motion-paused .split .ch,
+.motion-paused .line-fade,.motion-paused .manifesto .statement .w{opacity:1!important;transform:none!important;transition:none!important}
+@media(hover:hover) and (pointer:fine){body{cursor:auto}a,button,[role="button"]{cursor:pointer}}
+@media(max-width:1000px){.trust-bar{grid-template-columns:1fr}.trust-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:919px){
+  body{padding-bottom:calc(var(--dock-space) + env(safe-area-inset-bottom,0px))}
+  .top-btn{display:none}
+  .hero-status{gap:8px;flex-wrap:wrap;max-width:100%;border-radius:18px;font-size:12px}
+  .brand{gap:8px}.nav{gap:8px}.nav-cta{padding-inline:14px}
+  .glass,.glass-strong,.glass-soft,.glass-tint,.card,.tier,.svc-list{
+    backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4)}
+  .bg-mesh{filter:blur(60px);will-change:auto}.bg-caustics{animation:none}
+  .marquee{padding-block:20px}.marquee-track .item{font-size:13px;padding-inline:18px;gap:18px}
+}
+@media(max-width:600px){
+  :root{--pad:20px;--r-xl:26px}
+  .h-display{font-size:clamp(2rem,8.8vw,3.2rem);line-height:1.12;letter-spacing:-.045em}
+  .h-sec{font-size:clamp(1.85rem,8vw,2.8rem);line-height:1.12}
+  .hero{padding-top:122px}.lede{font-size:16px;line-height:1.8}
+  .hero-actions{gap:12px}.hero-actions .btn{padding:15px 20px;font-size:14px}
+  .trust-bar{padding:24px 20px;gap:22px}.trust-items{gap:24px 18px}
+  .trust-item .l{font-size:14px}.trust-item .v{font-size:1.6rem}
+  .sec-head{gap:22px;margin-bottom:36px}
+  .card,.tier{padding:30px 24px}.tier .amt{font-size:clamp(1.5rem,6.5vw,2rem);line-height:1.2}
+  .tier .desc{min-height:0}.tier .tag{top:18px;right:18px}
+  .note{font-size:14px;padding:20px}.support{padding:24px;flex-wrap:wrap}
+  .svc-head{grid-template-columns:28px minmax(0,1fr) 32px;gap:12px;padding:24px 16px}
+  .svc-row:hover .svc-head,.svc-row.open .svc-head{padding-inline:16px}
+  .svc-head h3{font-size:20px}.svc-body-inner{padding:0 20px 28px;gap:20px}
+  .svc-tags span{font-size:12px}.faq-q{gap:16px;padding:24px 20px}
+  .faq-item:hover .faq-q{padding-left:20px}.faq-a p{padding:0 20px 24px}
+  .mono-wrap{display:flex;flex-wrap:wrap;gap:10px;overflow:clip}
+  .mono-glow{inset:0;width:100%;height:100%}
+  .mono-card{width:100%}.float-badge{position:static;animation:none;font-size:11px;white-space:normal}
+  .mono-ticker{font-size:10px;left:20px;right:20px;gap:12px}
+  .manifesto{padding:88px 0!important}.manifesto .meta{gap:18px;font-size:12px;letter-spacing:.05em}
+  .dash-top{padding-inline:16px}.dash-title{white-space:normal;overflow-wrap:anywhere;font-size:11px}
+  .dash-side{gap:6px}.chart-wrap .head{flex-wrap:wrap;gap:8px}
+  .dash-bottom{padding:16px;gap:10px}.demo-caption{padding:14px 16px}
+  .case-top,.case-body{padding:28px 24px}.case-top h3{overflow-wrap:anywhere}
+  .tech-wrap span{font-size:11px;padding:10px 12px}
+  .cta-actions{flex-direction:column;align-items:stretch}.cta-actions .btn{justify-content:center}
+  .foot-top{gap:28px}.foot-brand{gap:16px}.foot-mono{width:48px;height:48px}
+  .foot-bot{gap:16px}.brand-txt .sub{font-size:9px;letter-spacing:.025em}
+}
+@media(max-width:360px){
+  :root{--pad:16px}.nav{padding:8px 10px;gap:6px}.brand{font-size:12px;gap:6px}
+  .brand-mark{width:28px;height:28px}.brand-txt .sub{font-size:8px}
+  .nav-cta{padding-inline:11px;gap:6px}.nav-burger{width:40px}
+  .hero-status .clock{flex-basis:100%;padding-left:36px}.hero-status .sep{display:none}
+  .hero-actions{flex-direction:column;align-items:stretch}.hero-actions .btn{justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  .cur,.cur-dot,.cur-ring,.cur-label{display:none}.marquee-track{transform:none!important}
+}
+@media(forced-colors:active){
+  .ital,.tier .amt,.stat .n,.impact-cell .v,.trust-item .v{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText}
+  .btn,.nav-cta,.tier,.card,.trust-bar{border:1px solid CanvasText}
+}
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#top">Skip to main content</a>
 
 <!-- PRELOADER -->
-<div id="preloader">
+<div id="preloader" aria-hidden="true">
   <div class="pl-wrap">
     <div class="pl-mark"></div>
     <div class="pl-name">Mohamad <span>Ayoub</span></div>
@@ -1012,35 +1138,35 @@ section{position:relative;padding:110px 0}
 </div>
 
 <!-- AMBIENT -->
-<div class="bg">
+<div class="bg" aria-hidden="true">
   <div class="bg-mesh" id="bgMesh"></div>
   <div class="bg-grid"></div>
   <div class="bg-noise"></div>
 </div>
-<div class="bg-caustics"></div>
-<div class="bg-vignette"></div>
+<div class="bg-caustics" aria-hidden="true"></div>
+<div class="bg-vignette" aria-hidden="true"></div>
 
 <!-- CURSOR -->
-<div class="cur-ring" id="curRing"></div>
-<div class="cur" id="cur"></div>
-<div class="cur-dot" id="curDot"></div>
-<div class="cur-label" id="curLabel"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"></div>
+<div class="cur" id="cur" aria-hidden="true"></div>
+<div class="cur-dot" id="curDot" aria-hidden="true"></div>
+<div class="cur-label" id="curLabel" aria-hidden="true"></div>
 
 <!-- PROGRESS + INDICATOR -->
-<div class="prog" id="prog"></div>
-<div class="sec-ind" id="secInd">
-  <div class="dot" data-label="Home" data-target="top"></div>
-  <div class="dot" data-label="About" data-target="about"></div>
-  <div class="dot" data-label="Problems" data-target="fix"></div>
-  <div class="dot" data-label="Services" data-target="services"></div>
-  <div class="dot" data-label="Process" data-target="process"></div>
-  <div class="dot" data-label="Work" data-target="case"></div>
-  <div class="dot" data-label="Pricing" data-target="pricing"></div>
-  <div class="dot" data-label="Contact" data-target="contact"></div>
-</div>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<nav class="sec-ind" id="secInd" aria-label="Page sections">
+  <button class="dot" type="button" aria-label="Go to Home" data-label="Home" data-target="top"></button>
+  <button class="dot" type="button" aria-label="Go to About" data-label="About" data-target="about"></button>
+  <button class="dot" type="button" aria-label="Go to Problems" data-label="Problems" data-target="fix"></button>
+  <button class="dot" type="button" aria-label="Go to Services" data-label="Services" data-target="services"></button>
+  <button class="dot" type="button" aria-label="Go to Process" data-label="Process" data-target="process"></button>
+  <button class="dot" type="button" aria-label="Go to Work" data-label="Work" data-target="case"></button>
+  <button class="dot" type="button" aria-label="Go to Pricing" data-label="Pricing" data-target="pricing"></button>
+  <button class="dot" type="button" aria-label="Go to Contact" data-label="Contact" data-target="contact"></button>
+</nav>
 
 <!-- NAV -->
-<nav class="nav glass glass-strong" id="nav">
+<nav class="nav glass glass-strong" id="nav" aria-label="Main navigation">
   <a href="#top" class="brand" data-mag>
     <span class="brand-mark"><span>MA</span></span>
     <span class="brand-txt">
@@ -1060,13 +1186,13 @@ section{position:relative;padding:110px 0}
     <span class="lbl-long">Book a call</span>
     <span class="lbl-short">Book</span>
   </a>
-  <button class="nav-burger" id="navBurger" aria-label="Open menu">
-    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  <button class="nav-burger" id="navBurger" type="button" aria-label="Open menu" aria-controls="navMobile" aria-expanded="false">
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
   </button>
 </nav>
 
 <!-- MOBILE MENU -->
-<div class="nav-mobile" id="navMobile">
+<div class="nav-mobile" id="navMobile" role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden="true" inert>
   <a href="#about">About <span>01</span></a>
   <a href="#services">Services <span>02</span></a>
   <a href="#pipeline">Pipeline <span>03</span></a>
@@ -1077,11 +1203,11 @@ section{position:relative;padding:110px 0}
   <a href="#contact" class="cta">Book a call →</a>
 </div>
 
-<main class="wrap" id="top">
+<main class="wrap" id="top" tabindex="-1">
 
   <!-- HERO -->
   <section class="hero" data-sec="0">
-    <canvas id="heroCanvas"></canvas>
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
     <div class="container">
 
       <div class="hero-status glass glass-soft glass-round" data-cursor="Live">
@@ -1099,19 +1225,19 @@ section{position:relative;padding:110px 0}
       </h1>
 
       <p class="lede fu d1">
-        I build automated data workflows that connect scattered business data, validate it,
-        structure it, and deliver reporting teams can actually trust — across ERP, ecommerce,
-        APIs, spreadsheets and databases.
+        Spend less time exporting and reconciling data, and more time using it. I connect your
+        ERP, ecommerce, APIs, spreadsheets and databases into automated, validated reporting
+        your sales, finance and operations teams can trust.
       </p>
 
       <div class="hero-actions fu d2">
         <a href="#contact" class="btn btn-primary" data-mag data-cursor="Let's talk">
           Start a project
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
         <a href="#case" class="btn btn-ghost" data-mag data-cursor="View">
           See the work
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
         </a>
       </div>
 
@@ -1122,26 +1248,27 @@ section{position:relative;padding:110px 0}
           <div class="dash-title">sales_performance.pbix — refresh: 04:12 AM Beirut</div>
           <div class="dash-status"><i></i> Live</div>
         </div>
+        <p class="demo-caption">Illustrative reporting preview — sample data, not client results.</p>
         <div class="dash-body">
           <aside class="dash-side">
             <div class="lbl">Overview</div>
-            <a href="#" class="active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
-            <a href="#"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-7"/></svg>Trends</a>
-            <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Refresh log</a>
+            <span class="preview-item active"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</span>
+            <span class="preview-item"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-7"/></svg>Trends</span>
+            <span class="preview-item"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>Refresh log</span>
             <div class="lbl">Sources</div>
-            <a href="#"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="9" ry="3"/><path d="M3 6v12c0 1.66 4 3 9 3s9-1.34 9-3V6"/></svg>SQL Server</a>
-            <a href="#"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>REST API</a>
-            <a href="#"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>CSV / Excel</a>
+            <span class="preview-item"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="9" ry="3"/><path d="M3 6v12c0 1.66 4 3 9 3s9-1.34 9-3V6"/></svg>SQL Server</span>
+            <span class="preview-item"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>REST API</span>
+            <span class="preview-item"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>CSV / Excel</span>
           </aside>
           <div class="dash-main">
             <div class="dash-kpis">
-              <div class="kpi"><div class="lbl">Revenue MTD</div><div class="val g1" data-count-price="248300">$0</div><div class="delta">▲ 12.4% vs LM</div></div>
-              <div class="kpi"><div class="lbl">Orders</div><div class="val g2" data-count-price="8412">0</div><div class="delta">▲ 4.8% vs LM</div></div>
+              <div class="kpi"><div class="lbl">Revenue MTD</div><div class="val g1" data-count-price="248300">$248,300</div><div class="delta">▲ 12.4% vs LM</div></div>
+              <div class="kpi"><div class="lbl">Orders</div><div class="val g2" data-count="8412">8,412</div><div class="delta">▲ 4.8% vs LM</div></div>
               <div class="kpi"><div class="lbl">Data quality</div><div class="val g3">99.7%</div><div class="delta">▲ 0.3 pts</div></div>
             </div>
             <div class="chart-wrap">
               <div class="head"><div class="t">Revenue trend — last 30 days</div><div class="r">updated 4 min ago</div></div>
-              <svg class="chart-svg" viewBox="0 0 600 120" preserveAspectRatio="none">
+              <svg aria-hidden="true" focusable="false" class="chart-svg" viewBox="0 0 600 120" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="chartGrad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0" stop-color="#6d8bff"/><stop offset=".5" stop-color="#b57bff"/><stop offset="1" stop-color="#3ee0d0"/>
@@ -1174,10 +1301,10 @@ section{position:relative;padding:110px 0}
 
       <!-- STATS -->
       <div class="stats fu d5" style="margin-top:56px">
-        <div class="stat"><div class="n" data-count="6">0</div><div class="l">Service areas</div></div>
-        <div class="stat"><div class="n" data-count="13">0</div><div class="l">Tools &amp; technologies</div></div>
-        <div class="stat"><div class="n" data-count="3" data-suffix="+">0</div><div class="l">Sources per build</div></div>
-        <div class="stat"><div class="n" data-prefix="$" data-count="250">0</div><div class="l">Projects start at</div></div>
+        <div class="stat"><div class="n" data-count="6">6</div><div class="l">Service areas</div></div>
+        <div class="stat"><div class="n" data-count="13">13</div><div class="l">Tools &amp; technologies</div></div>
+        <div class="stat"><div class="n" data-count="3" data-suffix="+">3+</div><div class="l">Sources per build</div></div>
+        <div class="stat"><div class="n" data-prefix="$" data-count="250">$250</div><div class="l">Projects start at</div></div>
       </div>
 
       <div class="scroll-cue fu d6" style="display:flex;align-items:center;gap:14px;margin-top:64px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)">
@@ -1188,11 +1315,8 @@ section{position:relative;padding:110px 0}
   </section>
 
   <!-- MARQUEE -->
-  <div class="marquee"><div class="marquee-track" data-speed="0.9"></div></div>
-  <div class="marquee"><div class="marquee-track" data-speed="-0.7"></div></div>
-  <br>
-  <br>
-  <br>
+  <div class="marquee"><div class="marquee-track" data-speed="0.9"><span class="item">Python</span><span class="item">Pandas</span><span class="item">SQL Server</span><span class="item">ETL / ELT</span><span class="item">Power BI</span><span class="item">DAX</span><span class="item">Power Query</span><span class="item">Data Warehousing</span><span class="item">Star Schema</span><span class="item">REST APIs</span><span class="item">Excel / CSV</span><span class="item">JSON</span><span class="item">Git / GitHub</span></div></div>
+  <div class="marquee"><div class="marquee-track" data-speed="-0.7" aria-hidden="true"><span class="item">Python</span><span class="item">Pandas</span><span class="item">SQL Server</span><span class="item">ETL / ELT</span><span class="item">Power BI</span><span class="item">DAX</span><span class="item">Power Query</span><span class="item">Data Warehousing</span><span class="item">Star Schema</span><span class="item">REST APIs</span><span class="item">Excel / CSV</span><span class="item">JSON</span><span class="item">Git / GitHub</span></div></div>
   <!-- TRUST BAR (new) -->
   <div class="trust-wrap">
   <div class="container">
@@ -1202,19 +1326,19 @@ section{position:relative;padding:110px 0}
       <div class="trust-items">
         <div class="trust-item">
           <span class="v">1–2<span style="font-size:.7em">wk</span></span>
-          <span class="l">First workflow live</span>
+          <span class="l">Your first workflow live</span>
         </div>
         <div class="trust-item">
           <span class="v">Fixed</span>
-          <span class="l">Scope &amp; price upfront</span>
+          <span class="l">Scope &amp; price agreed upfront</span>
         </div>
         <div class="trust-item">
           <span class="v">100%</span>
-          <span class="l">Code &amp; docs handed over</span>
+          <span class="l">You own the code &amp; docs</span>
         </div>
         <div class="trust-item">
           <span class="v">Free</span>
-          <span class="l">15-min discovery call</span>
+          <span class="l">15-min call to map your workflow</span>
         </div>
       </div>
     </div>
@@ -1247,19 +1371,19 @@ section{position:relative;padding:110px 0}
           </div>
 
           <div class="float-badge b1">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
             <span>Open for projects</span>
           </div>
           <div class="float-badge b2">
-            <svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>
             <span>Multi-source by default</span>
           </div>
           <div class="float-badge b3">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>
             <span>Every run logged</span>
           </div>
           <div class="float-badge b4">
-            <svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-7"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-7"/></svg>
             <span>No black boxes</span>
           </div>
         </div>
@@ -1287,28 +1411,28 @@ section{position:relative;padding:110px 0}
 
           <div class="about-certs">
             <div class="about-cert">
-              <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 8 8 8s8-3 8-8V7z"/><path d="m9 12 2 2 4-4"/></svg></div>
+              <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 8 8 8s8-3 8-8V7z"/><path d="m9 12 2 2 4-4"/></svg></div>
               <div>
                 <div class="t">Production-grade</div>
                 <div class="s">Tested, logged, documented</div>
               </div>
             </div>
             <div class="about-cert">
-              <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></div>
+              <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></div>
               <div>
                 <div class="t">Fixed-scope proposals</div>
                 <div class="s">No surprise invoices</div>
               </div>
             </div>
             <div class="about-cert">
-              <div class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3h12V9M12 15v-3"/></svg></div>
+              <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3h12V9M12 15v-3"/></svg></div>
               <div>
                 <div class="t">Multi-source native</div>
                 <div class="s">ERP, API, CSV, DB</div>
               </div>
             </div>
             <div class="about-cert">
-              <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
+              <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
               <div>
                 <div class="t">Handover included</div>
                 <div class="s">You own the pipeline</div>
@@ -1330,7 +1454,7 @@ section{position:relative;padding:110px 0}
   <section class="manifesto rv" id="manifesto" style="padding:140px 0">
     <div class="container">
       <span class="eyebrow" style="justify-content:center;display:inline-flex">The philosophy</span>
-      <p class="statement" id="manifestoText"></p>
+      <p class="statement" id="manifestoText">Reliable reporting is not a dashboard. It is a pipeline that earns trust every single run.</p>
       <div class="meta">
         <span>No black boxes</span><span>Traceable figures</span><span>Documented handover</span>
       </div>
@@ -1351,25 +1475,25 @@ section{position:relative;padding:110px 0}
       <div class="fix-grid">
         <article class="card rv-s tilt" data-spot data-cursor="01">
           <span class="num">01</span>
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></div>
+          <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg></div>
           <h3>Manual reporting</h3>
           <p>Replace repetitive exports, copy/paste and spreadsheet consolidation with repeatable, scheduled workflows that run without you.</p>
         </article>
         <article class="card rv-s tilt" data-spot data-cursor="02">
           <span class="num">02</span>
-          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3h12V9M12 15v-3"/></svg></div>
+          <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M6 9v3h12V9M12 15v-3"/></svg></div>
           <h3>Scattered data</h3>
           <p>Bring together ERP, Excel/CSV, ecommerce, APIs, databases and operational sources into one structured, queryable layer.</p>
         </article>
         <article class="card rv-s tilt" data-spot data-cursor="03">
           <span class="num">03</span>
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 8 8 8s8-3 8-8V7z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 5 3.5 8 8 8s8-3 8-8V7z"/><path d="m9 12 2 2 4-4"/></svg></div>
           <h3>Unreliable numbers</h3>
           <p>Add validation, reconciliation and structured data models before reporting — so every figure is traceable and defensible.</p>
         </article>
         <article class="card rv-s tilt" data-spot data-cursor="04">
           <span class="num">04</span>
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
+          <div class="icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
           <h3>Slow reporting</h3>
           <p>Create automated refresh and reporting workflows so decision-makers get consistent information faster — not days later.</p>
         </article>
@@ -1390,13 +1514,13 @@ section{position:relative;padding:110px 0}
 
       <div class="svc-list rv">
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="Reporting Automation" aria-expanded="false" aria-controls="service-panel-1">
             <span class="n">01</span>
             <h3>Reporting Automation</h3>
             <p>Automate recurring Excel/CSV reporting, consolidation, cleaning, validation and scheduled outputs.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-1"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Automated recurring report pipeline</li>
               <li>Python cleaning, consolidation, validation</li>
@@ -1408,13 +1532,13 @@ section{position:relative;padding:110px 0}
           </div></div>
         </div>
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="Multi-Source Integration" aria-expanded="false" aria-controls="service-panel-2">
             <span class="n">02</span>
             <h3>Multi-Source Integration</h3>
             <p>Connect and consolidate ERP, ecommerce, APIs, databases and spreadsheets into one layer.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-2"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Up to 3 agreed data sources connected</li>
               <li>Python / API or file-based ingestion</li>
@@ -1426,13 +1550,13 @@ section{position:relative;padding:110px 0}
           </div></div>
         </div>
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="ETL &amp; Data Pipelines" aria-expanded="false" aria-controls="service-panel-3">
             <span class="n">03</span>
             <h3>ETL &amp; Data Pipelines</h3>
             <p>Build Python + SQL workflows for ingestion, transformation, validation and incremental loading.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-3"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Incremental ETL workflows</li>
               <li>Transformation and business rules layer</li>
@@ -1444,13 +1568,13 @@ section{position:relative;padding:110px 0}
           </div></div>
         </div>
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="Power BI Reporting" aria-expanded="false" aria-controls="service-panel-4">
             <span class="n">04</span>
             <h3>Power BI Reporting</h3>
             <p>Build semantic models, DAX measures and interactive reports for sales, finance, operations and inventory.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-4"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Semantic model with clean relationships</li>
               <li>DAX measures that match business logic</li>
@@ -1462,13 +1586,13 @@ section{position:relative;padding:110px 0}
           </div></div>
         </div>
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="Data Warehousing" aria-expanded="false" aria-controls="service-panel-5">
             <span class="n">05</span>
             <h3>Data Warehousing</h3>
             <p>Design SQL Server star schemas, dimensions, facts and structured reporting layers.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-5"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Star schema design (facts + dimensions)</li>
               <li>SCD Type 2 for history-preserving dims</li>
@@ -1480,13 +1604,13 @@ section{position:relative;padding:110px 0}
           </div></div>
         </div>
         <div class="svc-row" data-spot>
-          <div class="svc-head" data-toggle>
+          <div class="svc-head" data-toggle role="button" tabindex="0" aria-label="Reconciliation &amp; Data Quality" aria-expanded="false" aria-controls="service-panel-6">
             <span class="n">06</span>
             <h3>Reconciliation &amp; Data Quality</h3>
             <p>Create checks, exception handling and audit/logging workflows for trustworthy data.</p>
-            <span class="svc-toggle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+            <span class="svc-toggle"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
           </div>
-          <div class="svc-body"><div class="svc-body-inner">
+          <div class="svc-body" id="service-panel-6"><div class="svc-body-inner">
             <div><h4>Deliverables</h4><ul>
               <li>Data quality rule sets</li>
               <li>Exception handling and audit trails</li>
@@ -1513,7 +1637,7 @@ section{position:relative;padding:110px 0}
       </div>
 
       <div class="pipe-wrap rv">
-        <svg class="pipe-svg" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet">
+        <svg aria-hidden="true" focusable="false" class="pipe-svg" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet">
           <defs>
             <linearGradient id="pipeGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#6d8bff"/><stop offset=".33" stop-color="#b57bff"/>
@@ -1593,22 +1717,22 @@ section{position:relative;padding:110px 0}
         <div class="impact-band">
           <div class="impact-cell">
             <div class="k">Reporting time</div>
-            <div class="v" data-count="1" data-suffix="h">0h</div>
+            <div class="v" data-count="1" data-suffix="h">1h</div>
             <div class="sub">from <b>15h / week</b></div>
           </div>
           <div class="impact-cell">
             <div class="k">Error rate</div>
-            <div class="v" data-count="0.3" data-suffix="%" data-decimals="1">0%</div>
+            <div class="v" data-count="0.3" data-suffix="%" data-decimals="1">0.3%</div>
             <div class="sub">from <b>12%</b></div>
           </div>
           <div class="impact-cell">
             <div class="k">Data quality</div>
-            <div class="v" data-count="99.7" data-suffix="%" data-decimals="1">0%</div>
+            <div class="v" data-count="99.7" data-suffix="%" data-decimals="1">99.7%</div>
             <div class="sub">from <b>74%</b></div>
           </div>
           <div class="impact-cell">
             <div class="k">Time to new report</div>
-            <div class="v" data-count="1" data-suffix="d">0d</div>
+            <div class="v" data-count="1" data-suffix="d">1d</div>
             <div class="sub">from <b>~2 weeks</b></div>
           </div>
         </div>
@@ -1721,7 +1845,7 @@ section{position:relative;padding:110px 0}
           <div class="tnum">01</div>
           <h3>Reporting Automation</h3>
           <p class="desc">A focused first engagement to eliminate repetitive reporting steps.</p>
-          <div class="amt" data-price-from="250" data-price-to="450">$0 – $0</div>
+          <div class="amt" data-price-from="250" data-price-to="450">$250 – $450</div>
           <div class="per">Fixed scope · 1 workflow</div>
           <hr>
           <ul>
@@ -1731,15 +1855,15 @@ section{position:relative;padding:110px 0}
             <li>One Power BI report or defined output</li>
             <li>Testing, handover &amp; documentation</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost" data-mag>Book a free audit</a>
+          <a href="#contact" class="btn btn-ghost" data-mag>Discuss this workflow</a>
         </article>
 
         <article class="tier featured rv-s" data-spot data-cursor="Most picked">
           <span class="tag">Most picked</span>
           <div class="tnum">02</div>
           <h3>Multi-Source BI System</h3>
-          <p class="desc">Connect operational data and turn it into consistent reporting.</p>
-          <div class="amt" data-price-from="500" data-price-to="1200">$0 – $0</div>
+          <p class="desc">Bring operational data together so teams work from consistent KPIs.</p>
+          <div class="amt" data-price-from="500" data-price-to="1200">$500 – $1,200</div>
           <div class="per">Up to 3 sources · scheduled refresh</div>
           <hr>
           <ul>
@@ -1755,8 +1879,8 @@ section{position:relative;padding:110px 0}
         <article class="tier rv-s" data-spot data-cursor="Explore">
           <div class="tnum">03</div>
           <h3>End-to-End Automation</h3>
-          <p class="desc">A broader implementation for more complex data operations.</p>
-          <div class="amt" data-price-from="1200" data-price-to="2500" data-suffix="+">$0 – $0+</div>
+          <p class="desc">Keep complex data operations moving with scheduled pipelines and reporting views.</p>
+          <div class="amt" data-price-from="1200" data-price-to="2500" data-suffix="+">$1,200 – $2,500+</div>
           <div class="per">Managed pipeline · multiple views</div>
           <hr>
           <ul>
@@ -1766,7 +1890,7 @@ section{position:relative;padding:110px 0}
             <li>Warehouse / data model &amp; reporting views</li>
             <li>Testing, documentation &amp; knowledge transfer</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost" data-mag>Talk scope</a>
+          <a href="#contact" class="btn btn-ghost" data-mag>Plan your automation</a>
         </article>
       </div>
 
@@ -1798,28 +1922,28 @@ section{position:relative;padding:110px 0}
       </div>
       <div class="faq rv">
         <div class="faq-item">
-          <button class="faq-q" data-faq>How long does a project usually take?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>Reporting Automation typically runs 1–2 weeks. Multi-Source BI Systems run 3–5 weeks. End-to-End builds depend on source count and complexity — usually 6–10 weeks. Timelines are confirmed in the fixed-scope proposal.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-1" aria-expanded="false" aria-controls="faq-answer-1">How long does a project usually take?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-1" role="region" aria-labelledby="faq-question-1"><p>Reporting Automation typically runs 1–2 weeks. Multi-Source BI Systems run 3–5 weeks. End-to-End builds depend on source count and complexity — usually 6–10 weeks. Timelines are confirmed in the fixed-scope proposal.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" data-faq>Do I need to know Python or SQL to work with you?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>No. You bring the business context and the data sources. I handle the technical layer and hand over documentation so your team can maintain it if needed — but you're never required to code.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-2" aria-expanded="false" aria-controls="faq-answer-2">Do I need to know Python or SQL to work with you?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-2" role="region" aria-labelledby="faq-question-2"><p>No. You bring the business context and the data sources. I handle the technical layer and hand over documentation so your team can maintain it if needed — but you're never required to code.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" data-faq>Where does my data live?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>Wherever you want. Most builds run on your own SQL Server, a cloud SQL instance, or a local warehouse. I don't retain or copy your data — everything stays in systems you control.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-3" aria-expanded="false" aria-controls="faq-answer-3">Where does my data live?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-3" role="region" aria-labelledby="faq-question-3"><p>Wherever you want. Most builds run on your own SQL Server, a cloud SQL instance, or a local warehouse. I don't retain or copy your data — everything stays in systems you control.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" data-faq>What if the scope changes mid-project?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>We define change requests in the agreement. Small adjustments are absorbed; bigger changes get a written mini-scope with a price and timeline before anything is built. No surprise invoices.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-4" aria-expanded="false" aria-controls="faq-answer-4">What if the scope changes mid-project?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-4" role="region" aria-labelledby="faq-question-4"><p>We define change requests in the agreement. Small adjustments are absorbed; bigger changes get a written mini-scope with a price and timeline before anything is built. No surprise invoices.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" data-faq>Can you work with our existing Power BI reports?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>Yes. I can rebuild the underlying data model while keeping your existing report visuals, or build new reports on top of a properly structured pipeline. Often the fastest path is to fix the model and let the reports improve themselves.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-5" aria-expanded="false" aria-controls="faq-answer-5">Can you work with our existing Power BI reports?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-5" role="region" aria-labelledby="faq-question-5"><p>Yes. I can rebuild the underlying data model while keeping your existing report visuals, or build new reports on top of a properly structured pipeline. Often the fastest path is to fix the model and let the reports improve themselves.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" data-faq>Do you offer ongoing support after handover?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
-          <div class="faq-a"><p>Yes — optional monthly support at $150–$350/month depending on scope. It covers pipeline monitoring, fixes, small updates and periodic data-quality reviews. You can cancel any time with the terms we agree on.</p></div>
+          <button class="faq-q" data-faq type="button" id="faq-question-6" aria-expanded="false" aria-controls="faq-answer-6">Do you offer ongoing support after handover?<span class="faq-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a" id="faq-answer-6" role="region" aria-labelledby="faq-question-6"><p>Yes — optional monthly support at $150–$350/month depending on scope. It covers pipeline monitoring, fixes, small updates and periodic data-quality reviews. You can cancel any time with the terms we agree on.</p></div>
         </div>
       </div>
     </div>
@@ -1831,15 +1955,15 @@ section{position:relative;padding:110px 0}
       <div class="cta rv-s">
         <span class="eyebrow" style="justify-content:center;display:inline-flex;margin-bottom:24px">Next step</span>
         <h2>Let's automate your<br><em class="ital">reporting workflow.</em></h2>
-        <p>Bring your existing systems and data. We'll map the current process, identify repetitive work, and design a practical automation path. Free 15-minute discovery call.</p>
+        <p>Tell me which report takes too long, where the data lives, and what your team needs to see. In a free 15-minute discovery call, we'll map the workflow and discuss a practical next step.</p>
         <div class="cta-actions">
           <a href="mailto:mhmd4work.1@gmail.com" class="btn btn-glow" data-mag data-cursor="Email">
             Book a discovery call
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
           <a href="https://linkedin.com/in/mhmdayoub/" target="_blank" rel="noopener" class="btn btn-ghost" data-mag data-cursor="LinkedIn">
             Connect on LinkedIn
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
         </div>
         <a href="mailto:mhmd4work.1@gmail.com" class="cta-mail" data-mag>mhmd4work.1@gmail.com</a>
@@ -1860,22 +1984,23 @@ section{position:relative;padding:110px 0}
         </div>
         <div class="foot-links rv">
           <a href="https://linkedin.com/in/mhmdayoub/" target="_blank" rel="noopener" data-mag data-cursor="LinkedIn">
-            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
           <a href="https://github.com/MohamadAyoub-hub" target="_blank" rel="noopener" data-mag data-cursor="GitHub">
-            <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.1-1.5 6.1-6.7A5.2 5.2 0 0 0 19.8 5a4.9 4.9 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.3 12.3 0 0 0-6.6 0C7 .1 5.9.4 5.9.4A4.9 4.9 0 0 0 5.8 4 5.2 5.2 0 0 0 4.4 7.8c0 5.2 3.1 6.4 6.1 6.7a3.4 3.4 0 0 0-.9 2.6V22"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.1-1.5 6.1-6.7A5.2 5.2 0 0 0 19.8 5a4.9 4.9 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.3 12.3 0 0 0-6.6 0C7 .1 5.9.4 5.9.4A4.9 4.9 0 0 0 5.8 4 5.2 5.2 0 0 0 4.4 7.8c0 5.2 3.1 6.4 6.1 6.7a3.4 3.4 0 0 0-.9 2.6V22"/></svg>
             GitHub
           </a>
           <a href="mailto:mhmd4work.1@gmail.com" data-mag data-cursor="Email">
-            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
             Email
           </a>
         </div>
       </div>
       <div class="foot-bot">
-        <span>© <span id="yr"></span> Mohamad Ayoub</span>
-        <span class="time" id="footTime">Beirut —:—</span>
+        <span>© <span id="yr">2026</span> Mohamad Ayoub</span>
+        <span class="time" id="footTime">Beirut, Lebanon</span>
+        <button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false" hidden>Pause motion</button>
         <span class="loc"><span class="dot"></span> Available for new projects</span>
       </div>
     </div>
@@ -1883,22 +2008,22 @@ section{position:relative;padding:110px 0}
 </main>
 
 <!-- FLOATING MOBILE ACTION BAR -->
-<div class="mbar glass glass-strong" id="mbar">
+<div class="mbar glass glass-strong" id="mbar" aria-label="Quick contact" inert>
   <a href="#contact" class="m-primary">Start a project</a>
   <a href="mailto:mhmd4work.1@gmail.com" class="m-ghost" aria-label="Email">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
   </a>
 </div>
 
 <!-- FLOATING DESKTOP BOOK PILL -->
-<a href="#contact" class="fab" id="fab">
+<a href="#contact" class="fab" id="fab" inert>
   <span class="dot"></span>
   Book a call
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
 </a>
 
-<button class="top-btn" id="topBtn" aria-label="Back to top">
-  <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+<button class="top-btn" id="topBtn" type="button" inert aria-label="Back to top">
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
 <script>
@@ -1911,18 +2036,42 @@ section{position:relative;padding:110px 0}
   const lerp   = (a, b, n) => a + (b - a) * n;
   const clamp  = (v, a, b) => Math.min(Math.max(v, a), b);
 
-  /* SPLIT */
-  $$('[data-split]').forEach(el => {
-    const base = parseInt(el.dataset.base || 0, 10);
-    const text = el.textContent;
-    el.textContent = '';
-    el.style.setProperty('--base', base + 'ms');
-    [...text].forEach((ch, i) => {
-      const s = document.createElement('span');
-      s.className = 'ch';
-      s.style.setProperty('--i', i);
-      s.textContent = ch === ' ' ? '\u00A0' : ch;
-      el.appendChild(s);
+  document.body.classList.add('loaded');
+  let motionPaused = reduce;
+  const pendingFrames = new Set();
+  function visualFrame(fn){
+    if(document.hidden || motionPaused){ pendingFrames.add(fn); return; }
+    requestAnimationFrame(now=>{
+      if(document.hidden || motionPaused){ pendingFrames.add(fn); return; }
+      fn(now);
+    });
+  }
+  function resumeFrames(){
+    if(document.hidden || motionPaused) return;
+    const frames=[...pendingFrames]; pendingFrames.clear(); frames.forEach(visualFrame);
+  }
+  document.addEventListener('visibilitychange',resumeFrames);
+  const motionToggle=$('#motionToggle');
+  motionToggle.hidden=reduce;
+  motionToggle.addEventListener('click',()=>{
+    motionPaused=!motionPaused;
+    document.documentElement.classList.toggle('motion-paused',motionPaused);
+    motionToggle.setAttribute('aria-pressed',String(motionPaused));
+    motionToggle.textContent=motionPaused?'Resume motion':'Pause motion';
+    resumeFrames();
+  });
+
+  /* Word-aware entrance preserves reading order and natural line breaks. */
+  if(!reduce) $$('[data-split]').forEach(el=>{
+    const text=el.textContent;
+    el.setAttribute('aria-label',text);
+    el.textContent='';
+    el.style.setProperty('--base',(parseInt(el.dataset.base||0,10))+'ms');
+    text.split(' ').forEach((word,i)=>{
+      if(i) el.appendChild(document.createTextNode(' '));
+      const span=document.createElement('span'); span.className='ch';
+      span.setAttribute('aria-hidden','true'); span.style.setProperty('--i',i);
+      span.textContent=word; el.appendChild(span);
     });
   });
 
@@ -1930,6 +2079,7 @@ section{position:relative;padding:110px 0}
   (function(){
     const el = $('#manifestoText'); if(!el) return;
     const phrase = 'Reliable reporting is not a dashboard. It is a pipeline that earns trust every single run.';
+    el.textContent='';
     const hot = new Set(['trust','every','run','not','pipeline']);
     phrase.split(' ').forEach((w, i) => {
       const s = document.createElement('span');
@@ -1940,35 +2090,13 @@ section{position:relative;padding:110px 0}
     });
   })();
 
-  /* PRELOADER */
-  (function(){
-    const pre=$('#preloader'), bar=$('#plBar'), count=$('#plCount'), status=$('#plStatus');
-    const stages=$$('#plStages span');
-    if(reduce){ pre.classList.add('gone'); document.body.classList.add('loaded'); return; }
-    const msgs=[{p:15,s:'Connecting sources',st:0},{p:38,s:'Pulling records',st:1},{p:62,s:'Validating data',st:2},{p:84,s:'Modelling warehouse',st:3},{p:100,s:'Ready',st:4}];
-    const start=performance.now(), dur=1800;
-    function tick(now){
-      const t=clamp((now-start)/dur,0,1), eased=1-Math.pow(1-t,3), pct=Math.round(eased*100);
-      bar.style.transform=`scaleX(${eased})`;
-      count.textContent=String(pct).padStart(3,'0');
-      const m=msgs.find(x=>pct<=x.p)||msgs[msgs.length-1];
-      status.textContent=m.s;
-      stages.forEach((s,i)=>s.classList.toggle('active',i===m.st-1||(m.st===4&&i===3)));
-      if(t<1) requestAnimationFrame(tick); else finish();
-    }
-    function finish(){
-      count.textContent='100'; status.textContent='Ready';
-      setTimeout(()=>{ pre.classList.add('done'); document.body.classList.add('loaded');
-        setTimeout(()=>pre.classList.add('gone'),1200); },320);
-    }
-    requestAnimationFrame(tick);
-  })();
-
   /* HERO CANVAS */
   (function(){
-    if(reduce) return;
+    if(reduce || !fine) return;
     const canvas=$('#heroCanvas'); if(!canvas) return;
-    const ctx=canvas.getContext('2d'); let W,H,DPR,parts,t0=0;
+    const ctx=canvas.getContext('2d'); if(!ctx) return;
+    let W,H,DPR,parts,t0=0,heroVisible=true;
+    new IntersectionObserver(([entry])=>{heroVisible=entry.isIntersecting;}).observe(canvas);
     function resize(){
       DPR=Math.min(window.devicePixelRatio||1,2);
       W=canvas.clientWidth; H=canvas.clientHeight;
@@ -1980,6 +2108,7 @@ section{position:relative;padding:110px 0}
       parts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.7+.7,hue:200+Math.random()*90}));
     }
     function frame(now){
+      if(!heroVisible){visualFrame(frame);return;}
       t0=now*.001;
       ctx.clearRect(0,0,W,H);
       parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;});
@@ -1996,9 +2125,9 @@ section{position:relative;padding:110px 0}
         ctx.fillStyle=`hsla(${p.hue},92%,74%,${.4+pulse*.38})`;
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
       });
-      requestAnimationFrame(frame);
+      visualFrame(frame);
     }
-    resize(); addEventListener('resize',resize); requestAnimationFrame(frame);
+    resize(); addEventListener('resize',resize); visualFrame(frame);
   })();
 
   /* CLOCK */
@@ -2018,46 +2147,79 @@ section{position:relative;padding:110px 0}
     const y=scrollY;
     nav.classList.toggle('hide',y>lastY&&y>500);
     topBtn.classList.toggle('on',y>800);
-    if(mbar) mbar.classList.toggle('on', y>600 && !document.querySelector('#contact')?.getBoundingClientRect().top < innerHeight);
+    const contactTop=$('#contact').getBoundingClientRect().top;
+    const menuOpen=$('#navMobile').classList.contains('on');
+    if(mbar){
+      const show=y>600 && contactTop>innerHeight && !menuOpen;
+      mbar.classList.toggle('on',show); mbar.inert=!show;
+    }
+    topBtn.inert=!(y>800 && !menuOpen);
+    $('#secInd').inert=!(y>300);
     if(fab){
       const contactRect = document.querySelector('#contact')?.getBoundingClientRect();
       const nearContact = contactRect && contactRect.top < innerHeight*0.75;
-      fab.classList.toggle('on', y>900 && !nearContact);
+      const show=y>900 && !nearContact && !menuOpen;
+      fab.classList.toggle('on',show); fab.inert=!show;
     }
     const max=document.documentElement.scrollHeight-innerHeight;
     prog.style.transform=`scaleX(${max>0?clamp(y/max,0,1):0})`;
-    if(!reduce) $('#bgMesh').style.transform=`translate3d(0,${y*.06}px,0)`;
+    if(!reduce && !motionPaused && fine) $('#bgMesh').style.transform=`translate3d(0,${y*.06}px,0)`;
     const tl=$('#timeline');
     if(tl){ const r=tl.getBoundingClientRect(); const p=clamp((innerHeight*.5-r.top)/r.height,0,1); $('#tlProgress').style.transform=`scaleY(${p})`; }
     const dots=$$('#secInd .dot'), secs=$$('[data-sec]');
     let active=0; secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top<innerHeight*.5) active=i; });
-    dots.forEach((d,i)=>d.classList.toggle('active',i===active));
+    dots.forEach((d,i)=>{d.classList.toggle('active',i===active); if(i===active)d.setAttribute('aria-current','location');else d.removeAttribute('aria-current');});
     $('#secInd').classList.toggle('on',y>300);
     lastY=y; ticking=false;
   }
   addEventListener('scroll',()=>{ if(!ticking){requestAnimationFrame(onScroll);ticking=true;} },{passive:true});
+  addEventListener('resize',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true;}},{passive:true});
   onScroll();
   topBtn.addEventListener('click',()=>scrollTo({top:0,behavior:reduce?'auto':'smooth'}));
   $$('#secInd .dot').forEach(d=>d.addEventListener('click',()=>{
     const t=document.getElementById(d.dataset.target); if(!t)return;
-    scrollTo({top:t.getBoundingClientRect().top+scrollY-70,behavior:reduce?'auto':'smooth'});
+    navigateTo(t);
   }));
 
-  /* MOBILE MENU */
+  /* Mobile navigation: Escape, focus containment and focus restoration. */
   (function(){
     const burger=$('#navBurger'), menu=$('#navMobile');
-    burger.addEventListener('click',()=>{
-      const open=menu.classList.toggle('on');
+    const background=[$('main'),$('#secInd')];
+    function setOpen(open,restore=true){
+      menu.classList.toggle('on',open); menu.inert=!open;
+      menu.setAttribute('aria-hidden',String(!open));
+      burger.setAttribute('aria-expanded',String(open));
+      burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+      document.body.classList.toggle('menu-open',open);
       document.body.style.overflow=open?'hidden':'';
+      background.forEach(el=>el.inert=open);
+      $('#nav .brand').inert=open; $('#nav .nav-cta').inert=open;
+      onScroll();
+      if(open) menu.querySelector('a').focus();
+      else if(restore) burger.focus();
+    }
+    burger.addEventListener('click',()=>setOpen(!menu.classList.contains('on')));
+    $$('#navMobile a').forEach(a=>a.addEventListener('click',()=>setOpen(false,false)));
+    document.addEventListener('keydown',e=>{
+      if(!menu.classList.contains('on'))return;
+      if(e.key==='Escape'){e.preventDefault();setOpen(false);return;}
+      if(e.key==='Tab'){
+        const items=[burger,...menu.querySelectorAll('a')];
+        const i=items.indexOf(document.activeElement);
+        const next=(i+(e.shiftKey?-1:1)+items.length)%items.length;
+        e.preventDefault();items[next].focus();
+      }
     });
-    $$('#navMobile a').forEach(a=>a.addEventListener('click',()=>{
-      menu.classList.remove('on');
-      document.body.style.overflow='';
-    }));
+    matchMedia('(min-width:920px)').addEventListener('change',e=>{
+      if(e.matches && menu.classList.contains('on')){setOpen(false,false);$('#nav .brand').focus();}
+    });
   })();
 
   /* REVEAL */
   (function(){
+    if(reduce || !('IntersectionObserver' in window)){
+      $$('.rv,.rv-s,[data-tl],.about-signature,#manifesto').forEach(el=>el.classList.add('in'));return;
+    }
     const io=new IntersectionObserver((entries)=>{
       entries.forEach((e,i)=>{
         if(e.isIntersecting){
@@ -2080,8 +2242,10 @@ section{position:relative;padding:110px 0}
 
   /* NUMBERS */
   function animateNumber(el,from,to,dur,fmt){
+    if(reduce || motionPaused){el.textContent=fmt(to);return;}
     const start=performance.now();
     function tick(now){
+      if(motionPaused){el.textContent=fmt(to);return;}
       const p=clamp((now-start)/dur,0,1), eased=1-Math.pow(1-p,3);
       el.textContent=fmt(from+(to-from)*eased);
       if(p<1) requestAnimationFrame(tick); else el.textContent=fmt(to);
@@ -2089,6 +2253,7 @@ section{position:relative;padding:110px 0}
     requestAnimationFrame(tick);
   }
   (function(){
+    if(reduce || !('IntersectionObserver' in window)) return;
     const io=new IntersectionObserver(entries=>{
       entries.forEach(e=>{
         if(!e.isIntersecting) return;
@@ -2103,21 +2268,6 @@ section{position:relative;padding:110px 0}
       });
     },{threshold:.4});
     $$('[data-count]').forEach(el=>io.observe(el));
-
-    const io2=new IntersectionObserver(entries=>{
-      entries.forEach(e=>{
-        if(!e.isIntersecting) return;
-        const el=e.target;
-        const a=parseFloat(el.getAttribute('data-price-from'));
-        const b=parseFloat(el.getAttribute('data-price-to'));
-        const suffix=el.dataset.suffix||'';
-        if(!isFinite(a)||!isFinite(b)){ el.textContent='—'; io2.unobserve(el); return; }
-        const fmt=v=>'$'+Math.round(v).toLocaleString('en-US');
-        animateNumber(el,0,1,1500,t=>`${fmt(a*t)} – ${fmt(b*t)}${suffix}`);
-        io2.unobserve(el);
-      });
-    },{threshold:.5});
-    $$('[data-price-from]').forEach(el=>io2.observe(el));
 
     const io3=new IntersectionObserver(entries=>{
       entries.forEach(e=>{
@@ -2152,21 +2302,22 @@ section{position:relative;padding:110px 0}
         const skew=clamp(vel*.35,-6,6);
         t.style.transform=`translate3d(${s.pos}px,0,0) skewX(${skew}deg)`;
       });
-      requestAnimationFrame(frame);
+      visualFrame(frame);
     }
-    requestAnimationFrame(frame);
+    visualFrame(frame);
   })();
 
   /* PIPELINE NODES */
   (function(){
     const nodes=$$('.pipe-node'); if(!nodes.length) return;
     let i=0;
-    setInterval(()=>{ nodes.forEach((n,idx)=>n.classList.toggle('active',idx===i)); i=(i+1)%nodes.length; },900);
+    if(reduce) return;
+    setInterval(()=>{ if(document.hidden || motionPaused) return; nodes.forEach((n,idx)=>n.classList.toggle('active',idx===i)); i=(i+1)%nodes.length; },900);
   })();
 
   /* TERMINAL */
   (function(){
-    const body=$('#termBody'); if(!body) return;
+    const body=$('#termBody'); if(!body) return; body.textContent='';
     const lines=[
       {d:600,h:`<span class="c"># ─── ingesting ────────────────────────────</span>`},
       {d:300,h:`<span class="ok">✓</span> CSV      orders_2026-10.csv        8,412 rows`},
@@ -2184,6 +2335,7 @@ section{position:relative;padding:110px 0}
       {d:320,h:`<span class="ok">■</span> <span class="k">Run complete.</span> <span class="s">Duration: 3m 42s</span>`},
       {d:400,h:`<span class="pr">$</span><span class="cmd">_</span><span class="blink"></span>`}
     ];
+    if(reduce){body.innerHTML=lines.map(l=>'<div class="row">'+l.h+'</div>').join('');return;}
     const io=new IntersectionObserver((entries,obs)=>{
       if(!entries[0].isIntersecting) return;
       obs.disconnect();
@@ -2204,23 +2356,27 @@ section{position:relative;padding:110px 0}
     io.observe(body.closest('.terminal'));
   })();
 
-  /* ACCORDIONS */
-  $$('[data-toggle]').forEach(head=>{
-    head.addEventListener('click',()=>{
-      const row=head.closest('.svc-row');
-      const open=row.classList.contains('open');
-      $$('.svc-row.open').forEach(r=>r.classList.remove('open'));
-      if(!open) row.classList.add('open');
-    });
-  });
-  $$('[data-faq]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const item=btn.closest('.faq-item');
-      const open=item.classList.contains('open');
-      $$('.faq-item.open').forEach(i=>i.classList.remove('open'));
-      if(!open) item.classList.add('open');
-    });
-  });
+  /* Expanded state and panel visibility remain synchronized. */
+  function accordion(selector,rowSelector,panelSelector){
+    const heads=$$(selector);
+    function sync(){heads.forEach(head=>{
+      const row=head.closest(rowSelector),open=row.classList.contains('open');
+      head.setAttribute('aria-expanded',String(open));
+      const panel=row.querySelector(panelSelector);panel.hidden=!open;panel.inert=!open;
+    });}
+    heads.forEach(head=>{
+      head.addEventListener('click',()=>{
+        const row=head.closest(rowSelector),open=row.classList.contains('open');
+        heads.forEach(h=>h.closest(rowSelector).classList.remove('open'));
+        row.classList.toggle('open',!open);sync();
+      });
+      if(head.getAttribute('role')==='button')head.addEventListener('keydown',e=>{
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();head.click();}
+      });
+    });sync();
+  }
+  accordion('[data-toggle]','.svc-row','.svc-body');
+  accordion('[data-faq]','.faq-item','.faq-a');
 
   /* CURSOR */
   (function(){
@@ -2242,7 +2398,7 @@ section{position:relative;padding:110px 0}
       cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;
       ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
       label.style.transform=`translate(${lx}px,${ly}px) translate(-50%,-50%) scale(${document.body.classList.contains('cur-label-on')?1:.4})`;
-      requestAnimationFrame(loop);
+      visualFrame(loop);
     })();
     $$('a,button,[data-cursor]').forEach(el=>{
       el.addEventListener('pointerenter',()=>{
@@ -2349,16 +2505,18 @@ section{position:relative;padding:110px 0}
     });
   });
 
-  /* SMOOTH ANCHORS */
-  $$('a[href^="#"]').forEach(a=>{
-    a.addEventListener('click',e=>{
-      const id=a.getAttribute('href');
-      if(id==='#'||id.length<2) return;
-      const t=document.querySelector(id); if(!t) return;
-      e.preventDefault();
-      scrollTo({top:t.getBoundingClientRect().top+scrollY-70,behavior:reduce?'auto':'smooth'});
-    });
-  });
+  function navigateTo(target){
+    if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+    target.focus({preventScroll:true});
+    const header=$('#nav').getBoundingClientRect().bottom+20;
+    scrollTo({top:Math.max(0,target.getBoundingClientRect().top+scrollY-header),behavior:reduce||motionPaused?'auto':'smooth'});
+    if(location.hash!=='#'+target.id){try{history.pushState(null,'','#'+target.id);}catch(e){/* file previews may restrict history */}}
+  }
+  $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+    const id=a.getAttribute('href').slice(1),target=document.getElementById(id);
+    if(!target)return;e.preventDefault();navigateTo(target);
+  }));
+  document.documentElement.classList.add('enhanced');
 })();
 </script>
 </body>
