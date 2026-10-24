@@ -1116,6 +1116,18 @@ html:not(.enhanced) .svc-head{cursor:default}
   .btn,.nav-cta,.tier,.card,.trust-bar{border:1px solid CanvasText}
 }
 
+.vc-gallery{padding:36px 40px;border-bottom:1px solid var(--line-2);background:rgba(125,180,230,.035)}
+.vc-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:16px}.vc-heading h4{font-size:clamp(1.35rem,2.7vw,1.9rem);line-height:1.25;letter-spacing:-.03em;margin-top:12px;color:var(--paper)}.vc-count{font:11px 'JetBrains Mono',monospace;color:var(--muted);padding:8px 12px;border:1px solid var(--line-2);border-radius:999px}.vc-intro{font-size:15px;line-height:1.75;color:var(--muted);max-width:80ch}.vc-context,.vc-hint{font-size:12px;line-height:1.7;color:var(--muted-2);margin-top:10px;max-width:90ch}
+.vc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 18px}.vc-tabs button{min-height:44px;padding:11px 14px;border-radius:12px;border:1px solid var(--line-2);background:rgba(193,225,255,.035);color:var(--muted);font-size:12px;line-height:1.4;transition:background .2s,color .2s}.vc-tabs button span{font:10px 'JetBrains Mono',monospace;margin-right:8px;opacity:.8}.vc-tabs button:hover{background:rgba(193,225,255,.10);color:var(--paper)}.vc-tabs button[aria-selected=true]{background:#d6eaff;color:#10263f;border-color:#e3f2ff;box-shadow:inset 0 1px 0 #fff}
+.vc-stage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:22px}.vc-view:first-child{grid-column:1/-1}.vc-enhanced .vc-stage{display:block;margin-top:0}.vc-view{margin:0;min-width:0;border:1px solid rgba(193,225,255,.22);border-radius:18px;overflow:hidden;background:rgba(6,16,30,.3)}.vc-preview{display:block;position:relative;overflow:hidden;background:#e9e8e7;cursor:zoom-in!important}.vc-preview img{display:block;width:100%;height:auto;object-fit:contain;max-width:100%;margin:0}.vc-expand{position:absolute;right:14px;bottom:14px;padding:10px 14px;border-radius:999px;background:rgba(9,23,40,.92);color:#f1f7ff;font-size:12px;font-weight:600;border:1px solid rgba(219,238,255,.34);pointer-events:none}
+.vc-view figcaption{display:flex;gap:18px;padding:20px 22px}.vc-number{font:11px 'JetBrains Mono',monospace;color:var(--muted-2);white-space:nowrap;margin-top:4px}.vc-view figcaption h4{font-size:16px;line-height:1.4;color:var(--paper);margin-bottom:6px}.vc-view figcaption p{font-size:14px;line-height:1.7;color:var(--muted);max-width:85ch}
+.vc-lightbox{position:fixed;inset:0;width:min(1540px,calc(100vw - 32px));height:min(960px,calc(100dvh - 32px));max-width:none;max-height:none;margin:auto;padding:0;border-radius:22px;border:1px solid rgba(193,225,255,.3);background:#0b1829;color:#f1f7ff;box-shadow:0 40px 120px rgba(0,0,0,.65);overflow:hidden}.vc-lightbox[open]{display:flex;flex-direction:column}.vc-lightbox::backdrop{background:rgba(0,5,14,.86);backdrop-filter:blur(10px)}
+.vc-toolbar{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 20px;border-bottom:1px solid rgba(193,225,255,.16);flex:none}.vc-toolbar h2{font:600 17px/1.35 'Inter',sans-serif;letter-spacing:-.02em;margin-top:3px;color:#f1f7ff}#vc-position{font:11px 'JetBrains Mono',monospace;color:#a9c7e9}.vc-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.vc-lightbox button,.vc-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border-radius:10px;background:rgba(193,225,255,.07);border:1px solid rgba(193,225,255,.2);color:#e3f1ff;font-size:13px;white-space:nowrap;cursor:pointer!important}.vc-lightbox button:hover,.vc-actions a:hover{background:rgba(193,225,255,.14)}
+.vc-viewport{flex:1;min-height:0;min-width:0;overflow:auto;padding:16px;display:flex;align-items:center;justify-content:center;overscroll-behavior:contain;background:#07111f}.vc-viewport img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;flex:none;border-radius:4px}.vc-viewport.vc-zoomed{display:block}.vc-viewport.vc-zoomed img{max-width:none;max-height:none;width:var(--vc-width);height:auto}.vc-bottom{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 20px;border-top:1px solid rgba(193,225,255,.16);flex:none}.vc-bottom p{font-size:13px;color:#c3d8f1;line-height:1.55;max-width:85ch}
+.vc-viewer-open .cur,.vc-viewer-open .cur-dot,.vc-viewer-open .cur-ring,.vc-viewer-open .cur-label{visibility:hidden}.vc-gallery a:focus-visible,.vc-gallery button:focus-visible,.vc-lightbox :focus-visible{outline:3px solid #acd8ff;outline-offset:3px}.vc-preview:focus-visible{outline-offset:-4px!important}
+@media(max-width:700px){.vc-gallery{padding:28px 20px 24px}.vc-stage{grid-template-columns:1fr}.vc-heading{gap:14px}.vc-count{font-size:10px}.vc-tabs{gap:7px}.vc-tabs button{padding:10px 12px}.vc-view{border-radius:14px}.vc-view figcaption{padding:17px;gap:12px}.vc-number{font-size:10px}.vc-expand{right:8px;bottom:8px;font-size:11px;padding:8px 10px}.vc-lightbox{width:100vw;height:100dvh;border-radius:0;border:0}.vc-toolbar{align-items:start;flex-direction:column;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px}.vc-actions{width:100%;gap:6px}.vc-actions>*{flex:1;font-size:12px;padding-inline:8px}.vc-viewport{padding:8px}.vc-bottom{gap:10px;flex-wrap:wrap;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px))}.vc-bottom p{order:3;flex-basis:100%;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.vc-tabs button{transition:none}}@media(forced-colors:active){.vc-tabs button[aria-selected=true]{background:Highlight;color:HighlightText}.vc-lightbox button,.vc-actions a{border:1px solid ButtonText}}
+
 </style>
 </head>
 <body>
@@ -1713,6 +1725,41 @@ html:not(.enhanced) .svc-head{cursor:default}
           </div>
         </div>
 
+
+<!-- VANTACOMMERCE GALLERY START -->
+<section class="vc-gallery" aria-labelledby="vc-gallery-title">
+<header class="vc-heading"><div><span class="eyebrow">Inside the project</span><h4 id="vc-gallery-title">From the data model to the decision.</h4></div><span class="vc-count">5 report pages · 1 data model</span></header>
+<p class="vc-intro">Explore the Power BI reports and the model behind VantaCommerce. Open a screenshot to inspect the details.</p>
+<p class="vc-context">Portfolio project screenshots. Figures shown belong to the project dataset and are not client business results. These are static previews of the reports.</p>
+<div class="vc-tabs" role="tablist" aria-label="VantaCommerce report views" hidden><button type="button" role="tab" id="vc-tab-executive" aria-controls="vc-panel-executive" aria-selected="true" tabindex="0"><span aria-hidden="true">01</span>Executive summary</button><button type="button" role="tab" id="vc-tab-products" aria-controls="vc-panel-products" aria-selected="false" tabindex="-1"><span aria-hidden="true">02</span>Products &amp; customers</button><button type="button" role="tab" id="vc-tab-sales" aria-controls="vc-panel-sales" aria-selected="false" tabindex="-1"><span aria-hidden="true">03</span>Sales &amp; operations</button><button type="button" role="tab" id="vc-tab-support" aria-controls="vc-panel-support" aria-selected="false" tabindex="-1"><span aria-hidden="true">04</span>Customer support</button><button type="button" role="tab" id="vc-tab-operations" aria-controls="vc-panel-operations" aria-selected="false" tabindex="-1"><span aria-hidden="true">05</span>API &amp; data operations</button><button type="button" role="tab" id="vc-tab-model" aria-controls="vc-panel-model" aria-selected="false" tabindex="-1"><span aria-hidden="true">06</span>Power BI data model</button></div>
+<div class="vc-stage"><figure class="vc-view" id="vc-panel-executive">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommercePage1.png" target="_blank" rel="noopener" aria-label="Open full-size Executive summary screenshot">
+<img src="assets/vantacommerce/VantaCommercePage1.png" alt="VantaCommerce: Executive report with sales and profit indicators, monthly sales and margin chart, country distribution, category breakdown and decomposition tree." width="1741" height="864" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">01 / 06</span><div><h4>Executive summary</h4><p>Sales, profit, margin and customer activity in one overview, with monthly trends, category mix and geographic drill-down.</p></div></figcaption></figure><figure class="vc-view" id="vc-panel-products">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommercePage2.png" target="_blank" rel="noopener" aria-label="Open full-size Products &amp; customers screenshot">
+<img src="assets/vantacommerce/VantaCommercePage2.png" alt="VantaCommerce: Product and customer report with stock indicators, category margins, inventory status, monthly sign-ups and customers by country and plan." width="1740" height="863" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">02 / 06</span><div><h4>Products &amp; customers</h4><p>Explore product margins, inventory status, customer geography and sign-up patterns to understand the business beyond total sales.</p></div></figcaption></figure><figure class="vc-view" id="vc-panel-sales">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommercePage3.png" target="_blank" rel="noopener" aria-label="Open full-size Sales &amp; operations screenshot">
+<img src="assets/vantacommerce/VantaCommercePage3.png" alt="VantaCommerce: Sales and operations report with sales and order trends, leading products and customers, a geographic map and country comparisons." width="1739" height="866" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">03 / 06</span><div><h4>Sales &amp; operations</h4><p>Compare sales and profit over time, track order volume, and identify leading products, customers and markets.</p></div></figcaption></figure><figure class="vc-view" id="vc-panel-support">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommercePage4.png" target="_blank" rel="noopener" aria-label="Open full-size Customer support screenshot">
+<img src="assets/vantacommerce/VantaCommercePage4.png" alt="VantaCommerce: Support analytics report with ticket totals, response and resolution times, satisfaction and breakdowns by status, priority and category." width="1745" height="862" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">04 / 06</span><div><h4>Customer support</h4><p>Review ticket volume, response and resolution times, satisfaction, priorities and issue categories.</p></div></figcaption></figure><figure class="vc-view" id="vc-panel-operations">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommercePage5.png" target="_blank" rel="noopener" aria-label="Open full-size API &amp; data operations screenshot">
+<img src="assets/vantacommerce/VantaCommercePage5.png" alt="VantaCommerce: API and data operations report with cart indicators, cart values, products by quantity, cart-item records and ETL run and step logs." width="1740" height="803" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">05 / 06</span><div><h4>API &amp; data operations</h4><p>Inspect API cart data alongside pipeline run and step logs, connecting business reporting to the data workflow behind it.</p></div></figcaption></figure><figure class="vc-view" id="vc-panel-model">
+<a class="vc-preview" href="assets/vantacommerce/VantaCommerceDataModel.png" target="_blank" rel="noopener" aria-label="Open full-size Power BI data model screenshot">
+<img src="assets/vantacommerce/VantaCommerceDataModel.png" alt="VantaCommerce: Power BI model diagram showing customer, product, date and geography tables, sales, support tickets, API carts and cart items, plus ETL run and step logs." width="1379" height="775" loading="lazy" decoding="async">
+<span class="vc-expand" aria-hidden="true">View full size ↗</span></a>
+<figcaption><span class="vc-number" aria-hidden="true">06 / 06</span><div><h4>Power BI data model</h4><p>See the tables and relationships behind the reports: customer, product, date and geography dimensions; sales, support and cart facts; and ETL logs.</p></div></figcaption></figure></div>
+<p class="vc-hint">Select a report above, then open its screenshot for an enlarged view. In the viewer, use the arrow keys to browse or Escape to close.</p>
+</section>
+<!-- VANTACOMMERCE GALLERY END -->
         <!-- Impact band (new) -->
         <div class="impact-band">
           <div class="impact-cell">
@@ -2518,6 +2565,38 @@ html:not(.enhanced) .svc-head{cursor:default}
   }));
   document.documentElement.classList.add('enhanced');
 })();
+</script>
+
+<dialog class="vc-lightbox" id="vc-lightbox" aria-labelledby="vc-title" aria-describedby="vc-caption">
+<div class="vc-toolbar"><div><span id="vc-position"></span><h2 id="vc-title">VantaCommerce</h2></div><div class="vc-actions">
+<button type="button" id="vc-zoom" aria-pressed="false" aria-label="Show screenshot at original size">Zoom in</button>
+<a id="vc-original" target="_blank" rel="noopener">Open original ↗</a>
+<button type="button" id="vc-close" aria-label="Close screenshot viewer" autofocus>Close ×</button></div></div>
+<div class="vc-viewport" id="vc-viewport" tabindex="0" aria-label="Screenshot view. When zoomed, scroll to inspect the image."><img id="vc-image" alt=""></div>
+<div class="vc-bottom"><button type="button" id="vc-prev" aria-label="Previous screenshot">← Previous</button><p id="vc-caption" aria-live="polite"></p><button type="button" id="vc-next" aria-label="Next screenshot">Next →</button></div>
+</dialog>
+<script>
+(function(){
+'use strict';
+const gallery=document.querySelector('.vc-gallery');if(!gallery)return;
+const figures=[...gallery.querySelectorAll('.vc-view')],tabs=[...gallery.querySelectorAll('[role="tab"]')];
+const dialog=document.getElementById('vc-lightbox'),viewport=document.getElementById('vc-viewport'),image=document.getElementById('vc-image'),zoom=document.getElementById('vc-zoom');
+let active=0,previousOverflow='';
+function select(index,focus){active=(index+figures.length)%figures.length;figures.forEach((f,i)=>f.hidden=i!==active);tabs.forEach((t,i)=>{t.setAttribute('aria-selected',String(i===active));t.tabIndex=i===active?0:-1;});if(focus)tabs[active].focus();}
+tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>select(i,false));tab.addEventListener('keydown',e=>{let next;if(e.key==='ArrowRight')next=i+1;else if(e.key==='ArrowLeft')next=i-1;else if(e.key==='Home')next=0;else if(e.key==='End')next=figures.length-1;else return;e.preventDefault();select(next,true);});});
+figures.forEach((f,i)=>{f.setAttribute('role','tabpanel');f.setAttribute('aria-labelledby',tabs[i].id);});
+gallery.classList.add('vc-enhanced');gallery.querySelector('.vc-tabs').hidden=false;select(0,false);
+if(!dialog||typeof dialog.showModal!=='function')return;
+function setZoom(on){viewport.classList.toggle('vc-zoomed',on);zoom.setAttribute('aria-pressed',String(on));zoom.textContent=on?'Fit to screen':'Zoom in';zoom.setAttribute('aria-label',on?'Fit screenshot to screen':'Show screenshot at original size');viewport.scrollTop=0;viewport.scrollLeft=0;}
+function render(){const figure=figures[active],img=figure.querySelector('img'),link=figure.querySelector('a');image.src=link.getAttribute('href');image.alt=img.alt;image.setAttribute('width',img.getAttribute('width'));image.setAttribute('height',img.getAttribute('height'));viewport.style.setProperty('--vc-width',img.getAttribute('width')+'px');document.getElementById('vc-title').textContent=figure.querySelector('h4').textContent;document.getElementById('vc-position').textContent='VantaCommerce · '+(active+1)+' / '+figures.length;document.getElementById('vc-caption').textContent=figure.querySelector('figcaption p').textContent;document.getElementById('vc-original').href=link.getAttribute('href');setZoom(false);}
+figures.forEach((f,i)=>f.querySelector('a').addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;e.preventDefault();select(i,false);render();previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';document.body.classList.add('vc-viewer-open');dialog.showModal();}));
+function browse(offset){select(active+offset,false);render();}
+document.getElementById('vc-close').addEventListener('click',()=>dialog.close());document.getElementById('vc-prev').addEventListener('click',()=>browse(-1));document.getElementById('vc-next').addEventListener('click',()=>browse(1));zoom.addEventListener('click',()=>setZoom(!viewport.classList.contains('vc-zoomed')));
+dialog.addEventListener('keydown',e=>{if(viewport.classList.contains('vc-zoomed'))return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();browse(e.key==='ArrowRight'?1:-1);}});
+dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
+dialog.addEventListener('close',()=>{document.body.style.overflow=previousOverflow;document.body.classList.remove('vc-viewer-open');setZoom(false);figures[active].querySelector('a').focus({preventScroll:true});});
+})();
+
 </script>
 </body>
 </html>
