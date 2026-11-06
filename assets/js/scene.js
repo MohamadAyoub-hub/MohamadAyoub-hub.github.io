@@ -1,19 +1,15 @@
 import * as THREE from '../vendor/three/three.module.js';
+import {orders,readyOrders} from './journey.js';
 
 const clamp = (value, low = 0, high = 1) => Math.min(high, Math.max(low, value));
 const ease = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
 const ramp = (value, start, end) => ease((value - start) / (end - start));
 const mix = (a, b, t) => a + (b - a) * t;
 
-const SCENE_RESPONSE_MS = 220;
+const SCENE_RESPONSE_MS = 260;
+const STAGE_TRANSITION_MS = 300;
 const MAX_SCENE_STEP_PER_SECOND = .72;
-const AMOUNTS = [120, 89, 58];
-const READY = [0, 1, 5];
-const HELD = [2, 3, 4];
-const scatter = [[-4.65,-1.9],[-2.05,1.78],[4.95,-1.14],[1.45,-1.78],[-4.05,2.05],[4.42,1.84]];
-const columnX = i => (i % 3 - 1) * 2.62;
-const ledger = i => [columnX(i), i < 3 ? -1.03 : 1.03];
-const intake = i => [columnX(i) * .79, i < 3 ? -2.37 : -1.63];
+const HELD = orders.flatMap((row,i)=>row.reason?[i]:[]);
 
 export function roomProgress(scroll, height, anchors, end, offset = height * .46) {
   const line = scroll + offset;
@@ -44,363 +40,370 @@ function followScenePose(current, target, deltaMs) {
   return current + Math.sign(distance) * Math.min(Math.abs(distance) * easing, maximumStep);
 }
 
-export function tokenPose(index, t, record) {
-  const [gridX,gridZ] = ledger(record);
-  const [inputX,inputZ] = intake(record);
-  const heldSlot = HELD.indexOf(record);
-  const readySlot = READY.indexOf(record);
-  const held = heldSlot !== -1;
-  const resultX = columnX(held ? heldSlot : readySlot);
-  const resultZ = held ? 2.11 : .22;
-  let x,y=.36,z,scale=1,turn=0,signal=0;
-  if (index === 0) {
-    const [sx,sz] = scatter[record];
-    const arrival = ramp(t,record * .041,.7 + record * .035);
-    x = mix(sx,gridX,arrival); z = mix(sz,gridZ,arrival);
-    y += Math.sin(arrival * Math.PI) * .26;
-    turn = (1-arrival) * (record % 2 === 0 ? -.64 : .5);
-  } else if (index === 1) {
-    const start = .11 + record * .028;
-    const collect = ramp(t,0,start);
-    const through = ramp(t,start,start + .36);
-    const stage = ramp(t,start + .29,.94 + record * .009);
-    x = mix(mix(mix(gridX,-4.65,collect),0,through),inputX,stage);
-    z = mix(mix(mix(gridZ,2.08,collect),.1,through),inputZ,stage);
-    y += Math.sin(through * Math.PI) * .51;
-  } else if (index === 2) {
-    const travel = ramp(t,.11 + record * .022,.69 + record * .018);
-    x = mix(inputX,resultX,travel) + Math.sin(travel * Math.PI) * (held ? 1.37 : -.38);
-    z = mix(inputZ,resultZ,travel); y += Math.sin(travel * Math.PI) * .28;
-    signal = ramp(t,.38,.73);
-  } else if (index === 3) {
-    const connect = ramp(t,.08,.66);
-    x = mix(resultX,(readySlot-1) * .63,connect); z = mix(resultZ,1.45,connect);
-    scale = held ? 1 - ramp(t,0,.35) : 1 - connect * .30;
-    signal = 1;
-  } else {
-    const raise = ramp(t,.12 + Math.max(0,readySlot) * .065,.79 + Math.max(0,readySlot) * .065);
-    x = mix((readySlot-1) * .63,resultX,ramp(t,0,.43));
-    z = mix(1.45,.1,ramp(t,0,.43));
-    y = .36 + (held ? 0 : AMOUNTS[readySlot] / 120 * 3.25 * raise);
-    scale = held ? 0 : .7;
-    signal = 1;
-  }
-  return {x,y,z,scale,turn,signal,held};
-}
-
 function makeWorld(renderer, compact) {
-  const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-8,8,5,-5,.1,90);
-  const look = new THREE.Vector3();
-  const resources = new Set();
-  const keep = resource => { resources.add(resource); return resource; };
-  const unit = keep(new THREE.BoxGeometry(1,1,1));
-  const outline = keep(new THREE.EdgesGeometry(unit));
-  const face = (color, options={}) => keep(new THREE.MeshStandardMaterial({color,metalness:.21,roughness:.53,...options}));
-  const edge = (color, opacity) => keep(new THREE.LineBasicMaterial({color,opacity,transparent:opacity<1}));
-  const glow = color => keep(new THREE.MeshBasicMaterial({color}));
-  const graphite = face(0x121e30,{metalness:.38,roughness:.46});
-  const slate = face(0x223751);
-  const blue = face(0x1c3a65,{emissive:0x1b478c,emissiveIntensity:.21});
-  const lit = face(0x3c70b3,{emissive:0x376bd1,emissiveIntensity:.26});
-  const amber = face(0x533919,{emissive:0xb8750d,emissiveIntensity:.16});
-  const blueLight = glow(0x76a8ff), amberLight = glow(0xf59e0b);
-  const trim = edge(0x5886c6,.70), floorEdge = edge(0x33517d,.61), heldEdge = edge(0xb8863f,.70);
-  const signal = edge(0x86b5ff,.99), dimSignal = edge(0x557cac,.69);
-  const stages = Array.from({length:5},()=>new THREE.Group());
-  scene.add(...stages);
-  scene.add(new THREE.HemisphereLight(0xb6cbea,0x131e2e,1.48));
-  const key = new THREE.DirectionalLight(0xebf3ff,2.72);
-  key.position.set(-4,8,6);
-  const rim = new THREE.DirectionalLight(0x5f96ff,1.92);
-  rim.position.set(4,3,-6);
-  scene.add(key,rim);
+  const scene=new THREE.Scene();
+  const camera=new THREE.OrthographicCamera(-8,8,5,-5,.1,70);
+  const resources=new Set();
+  function keep(resource) {
+    resources.add(resource);
+    return resource;
+  }
 
-  function block(group,x,y,z,w,h,d,material,line) {
-    const mesh = new THREE.Mesh(unit,material);
+  const atmosphere=keep(new THREE.DataTexture(
+    new Uint8Array([8,18,31,255,15,29,44,255,11,23,39,255,19,43,53,255]),
+    2,2,THREE.RGBAFormat
+  ));
+  atmosphere.colorSpace=THREE.SRGBColorSpace;
+  atmosphere.minFilter=atmosphere.magFilter=THREE.LinearFilter;
+  atmosphere.needsUpdate=true;
+  const key=new THREE.DirectionalLight(0xd7eaff,2.65);
+  const rim=new THREE.DirectionalLight(0x78bdcb,1.22);
+  key.position.set(-4,8,5);
+  rim.position.set(6,3,-5);
+  scene.add(key,rim,new THREE.HemisphereLight(0xd3e9ff,0x293b56,1.53));
+
+  const standard=(color,metalness=.22,roughness=.52)=>keep(new THREE.MeshStandardMaterial({color,metalness,roughness}));
+  const flat=color=>keep(new THREE.MeshBasicMaterial({color}));
+  const base=standard(0x111b2c,.43,.55);
+  const edge=standard(0x2b4059,.46,.40);
+  const dark=standard(0x192b41,.35,.48);
+  const satin=standard(0x36536e,.36,.37);
+  const tealMetal=standard(0x187d81,.30,.36);
+  const warmMetal=standard(0x8b5d31,.22,.50);
+  const raw=standard(0x486680,.32,.40);
+  const teal=flat(0x5ce1d4);
+  const blue=flat(0x7fa7f5);
+  const amber=flat(0xf8b76a);
+  const dim=flat(0x355471);
+  const silver=standard(0x9ce2ef,.25,.32);
+  const quiet=standard(0x273d51);
+  const cube=keep(new THREE.BoxGeometry(1,1,1));
+  const pin=keep(new THREE.CylinderGeometry(.071,.071,.023,12));
+  const sphere=keep(new THREE.SphereGeometry(.09,12,8));
+  const bracket=keep(new THREE.TorusGeometry(.43,.018,6,32));
+  const groups=Array.from({length:5},()=>new THREE.Group());
+  scene.add(...groups);
+
+  function box(group,material,x,y,z,w,h,d,geometry=cube) {
+    const mesh=new THREE.Mesh(geometry,material);
     mesh.position.set(x,y,z);
     mesh.scale.set(w,h,d);
-    if(line) mesh.add(new THREE.LineSegments(outline,line));
     group.add(mesh);
     return mesh;
   }
-
-  function slab(width,depth,height,radius,bevel) {
-    const x=width/2,z=depth/2,r=radius;
+  function rounded(w,d,h,r) {
+    const x=w/2,z=d/2;
     const shape=new THREE.Shape();
     shape.moveTo(-x+r,-z);
     shape.lineTo(x-r,-z); shape.quadraticCurveTo(x,-z,x,-z+r);
     shape.lineTo(x,z-r); shape.quadraticCurveTo(x,z,x-r,z);
     shape.lineTo(-x+r,z); shape.quadraticCurveTo(-x,z,-x,z-r);
     shape.lineTo(-x,-z+r); shape.quadraticCurveTo(-x,-z,-x+r,-z);
-    const geometry=keep(new THREE.ExtrudeGeometry(shape,{
-      depth:height,steps:1,curveSegments:3,bevelEnabled:true,bevelThickness:bevel,bevelSize:bevel,bevelSegments:1
-    }));
-    geometry.rotateX(-Math.PI/2);
-    geometry.translate(0,-height/2,0);
-    return geometry;
+    const mesh=keep(new THREE.ExtrudeGeometry(shape,{depth:h,bevelEnabled:true,bevelThickness:.033,bevelSize:.026,bevelSegments:1,curveSegments:3}));
+    mesh.rotateX(-Math.PI/2);
+    mesh.translate(0,-h/2,0);
+    return mesh;
+  }
+  function pinAt(group,x,z) {
+    const item=new THREE.Mesh(pin,satin);
+    item.position.set(x,.018,z);
+    group.add(item);
   }
 
-  function cable(group,points,material) {
-    const path = new THREE.CurvePath();
-    for (let i=1;i<points.length;i++) {
-      path.add(new THREE.LineCurve3(new THREE.Vector3(...points[i-1]),new THREE.Vector3(...points[i])));
+  const chassis=new THREE.Group();
+  scene.add(chassis);
+  box(chassis,base,0,-.28,0,1,1,1,rounded(11.65,6.00,.36,.26));
+  box(chassis,edge,0,-.075,0,1,1,1,rounded(11.45,5.81,.067,.24));
+  box(chassis,base,0,-.027,0,1,1,1,rounded(11.21,5.57,.036,.22));
+  const calibration=new THREE.GridHelper(11,22,0x2b4057,0x263952);
+  calibration.scale.z=.48;
+  calibration.position.y=.030;
+  calibration.material.transparent=true;
+  calibration.material.opacity=.45;
+  keep(calibration.geometry);
+  keep(calibration.material);
+  chassis.add(calibration);
+  for (const x of [-5.38,5.38]) for (const z of [-2.58,2.58]) pinAt(chassis,x,z);
+  for (const x of [-3.87,0,3.87]) box(chassis,dim,x,-.177,2.999,.77,.026,.018);
+
+  function path(group,points,color) {
+    const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+    const conduit=keep(new THREE.TubeGeometry(curve,compact?20:32,.025,5,false));
+    group.add(new THREE.Mesh(conduit,color));
+    return curve;
+  }
+  const samplePoint=new THREE.Vector3();
+  function send(group,curve,color) {
+    const packet=new THREE.Mesh(sphere,color);
+    packet.scale.set(1.4,.57,1);
+    group.add(packet);
+    return progress=>{
+      packet.visible=progress>0 && progress<1;
+      if (packet.visible) {
+        curve.getPoint(progress,samplePoint);
+        packet.position.copy(samplePoint);
+        packet.position.y+=.033;
+      }
+    };
+  }
+
+  function dock(group,x,z,w,d,light=blue) {
+    box(group,dark,x,.047,z,w,.10,d);
+    box(group,edge,x,.116,z,w-.12,.034,d-.12);
+    box(group,light,x,.14,z+d/2-.09,Math.min(.53,w*.42),.023,.025);
+  }
+  const layout=[-.95,.72];
+  const ledgerX=[-3.55,0,3.55];
+  for (const x of ledgerX) for (const z of layout) dock(groups[0],x,z,2.05,1.18);
+  for (let i=0;i<3;i++) path(groups[0],[[ledgerX[i],.02,-2.23],[ledgerX[i],.02,1.63]],dim);
+
+  // Intake hardware: source trays, processor and a staging rack.
+  const intake=groups[1];
+  dock(intake,-4.24,.09,1.76,3.52);
+  for (const z of [-.91,.09,1.09]) {
+    box(intake,satin,-4.24,.215,z,1.32,.15,.71);
+    box(intake,blue,-4.24,.30,z-.25,.63,.019,.023);
+  }
+  dock(intake,-.54,0,2.16,2.04);
+  box(intake,dark,-.54,.40,0,1.91,.61,1.75);
+  box(intake,satin,-.54,.744,0,1.58,.068,1.45);
+  box(intake,tealMetal,-.54,.805,0,1.08,.078,1.01);
+  box(intake,teal,-.54,.854,0,.71,.019,.65);
+  for (const side of [-1,1]) {
+    for (const z of [-.52,-.19,.19,.52]) box(intake,edge,-.54+.92*side,.26,z,.31,.08,.055);
+  }
+  dock(intake,3.71,0,2.34,3.58,teal);
+  for (const z of [-.99,0,.99]) {
+    box(intake,dark,3.71,.225,z,1.98,.13,.78);
+    box(intake,dim,3.71,.301,z-.27,1.64,.018,.025);
+  }
+  const intakeRoute=path(intake,[[-4.07,.25,-.21],[-2.36,.24,-.21],[-1.63,.34,0],[-.55,.87,0],[.67,.31,0],[2.15,.24,-.19],[3.72,.24,-.19]],dim);
+  const intakeSignal=send(intake,intakeRoute,teal);
+
+  // The gate exposes separate ready and review destinations.
+  const verify=groups[2];
+  dock(verify,-4.10,0,1.63,2.28);
+  for (const z of [-1.25,1.25]) {
+    dock(verify,-1.6,z,.77,.58);
+    box(verify,dark,-1.6,.79,z,.48,1.30,.47);
+    box(verify,blue,-1.34,.84,z,.019,.72,.045);
+  }
+  box(verify,edge,-1.60,1.48,0,.57,.20,2.78);
+  box(verify,blue,-1.29,1.45,0,.019,.039,2.24);
+  const beam=keep(new THREE.MeshBasicMaterial({color:0x8bb6ff,transparent:true,opacity:.15,depthWrite:false}));
+  const scan=box(verify,beam,-1.48,.74,0,.049,1.23,2.28);
+  const checkReady=path(verify,[[-4.03,.21,0],[-2.2,.21,0],[-1.55,.21,0],[-.42,.21,-1.02],[1.09,.21,-1.10],[4.97,.21,-1.10]],dim);
+  const checkHeld=path(verify,[[-1.55,.21,0],[-.44,.21,1.17],[1.08,.21,1.27],[4.97,.21,1.27]],dim);
+  const readySignal=send(verify,checkReady,teal);
+  const heldSignal=send(verify,checkHeld,amber);
+  const laneX=[.23,2.53,4.83];
+  for (const x of laneX) {
+    dock(verify,x,-1.10,1.65,.87,teal);
+    dock(verify,x,1.27,1.65,.87,amber);
+  }
+
+  // The two lookup modules link to the approved-order model and a measure.
+  const model=groups[3];
+  for (const z of [-1.52,1.29]) {
+    dock(model,-4.13,z,1.96,1.23);
+    box(model,satin,-4.13,.38,z,1.61,.49,.95);
+    box(model,dark,-4.13,.66,z,1.44,.064,.81);
+    for (const offset of [-.36,0,.36]) box(model,z<0?blue:teal,-4.13+offset,.708,z,.19,.024,.51);
+  }
+  dock(model,-.13,-.12,3.44,2.32,teal);
+  box(model,tealMetal,-.13,.36,-.31,2.98,.45,1.29);
+  box(model,dark,-.13,.613,-.31,2.76,.07,1.08);
+  for (const x of [-1.08,-.13,.82]) box(model,teal,x,.662,-.31,.49,.021,.70);
+  dock(model,4.04,.03,2.12,1.55,teal);
+  box(model,dark,4.04,.435,.03,1.87,.57,1.26);
+  box(model,satin,4.04,.758,.03,1.68,.057,1.09);
+  box(model,teal,4.04,.797,.03,1.26,.019,.74);
+  const joins=[-1.52,1.29].map((z,i)=>{
+    const curve=path(model,[[-3.12,.15,z],[-2.41,.15,z],[-1.81,.15,z*.58],[-.99,.15,0]],dim);
+    return send(model,curve,i===0?blue:teal);
+  });
+  const measure=send(model,path(model,[[1.62,.18,-.24],[2.32,.18,-.24],[2.77,.18,.07],[3.52,.18,.07]],dim),teal);
+
+  // Report stage: real geometry for the columns and their selected values.
+  const report=groups[4];
+  dock(report,-1.82,.22,7.40,2.86,blue);
+  const plotX=[-4.02,-1.81,.40];
+  const columns=readyOrders.map((row,i)=>{
+    const x=plotX[i];
+    dock(report,x,.35,1.50,1.12,teal);
+    const column=box(report,tealMetal,x,.18,.35,1.05,1,1.05);
+    const cap=box(report,teal,x,.23,.35,1.09,.04,1.09);
+    return {row,x,column,cap};
+  });
+  for (const y of [.28,1.14,2,2.86]) {
+    path(report,[[-5.26,y,-.53],[1.66,y,-.53]],dim);
+  }
+  dock(report,4.04,.10,2.19,2.65,teal);
+  box(report,dark,4.04,.35,.10,1.91,.41,2.31);
+  box(report,edge,4.04,.59,.10,1.75,.045,2.17);
+  for (const z of [-.64,.08,.8]) box(report,dim,4.04,.624,z,1.20,.023,.16);
+  const reportSignal=send(report,path(report,[[1.19,.18,1.23],[2.11,.18,1.23],[2.67,.18,.22],[3.67,.18,.22]],dim),teal);
+
+  const packetShape=rounded(.86,.57,.12,.083);
+  const packets=orders.map((_,i)=>{
+    const group=new THREE.Group();
+    scene.add(group);
+    const shell=box(group,raw,0,0,0,1,1,1,packetShape);
+    const strip=box(group,blue,0,.104,0,.51,.016,.059);
+    return {group,shell,strip,index:i};
+  });
+  const traceRing=new THREE.Mesh(bracket,blue);
+  traceRing.rotation.x=-Math.PI/2;
+  scene.add(traceRing);
+
+  const heldIndices=orders.flatMap((row,i)=>row.reason?[i]:[]);
+  const readyIndices=readyOrders.map(row=>row.sourceIndex);
+  function flight(i,index,t) {
+    const row=orders[i];
+    const c=i%3;
+    if (index===0) {
+      const u=ramp(t,.03+i*.04,.76+i*.028);
+      return {x:mix((c-1)*4.9,ledgerX[c],u),y:.27+.83*(1-u)+Math.sin(u*Math.PI)*.34,z:mix(i<3?-2.27:2.27,layout[Math.floor(i/3)],u),turn:(1-u)*(c-1)*.76};
     }
-    const geometry = keep(new THREE.BufferGeometry().setFromPoints(path.getSpacedPoints(28)));
-    group.add(new THREE.Line(geometry,material));
-    return geometry;
-  }
-
-  function housing(group,x,z,w,d,material=slate) {
-    block(group,x,.025,z,w+.14,.07,d+.14,graphite,floorEdge);
-    block(group,x,.09,z,w,.09,d,material,trim);
-    block(group,x,.151,z+d*.33,w*.63,.017,.025,blueLight);
-  }
-
-  // The two-piece base gives the workbench depth and a shaded edge.
-  const lower = new THREE.Mesh(slab(13.06,6.06,.18,.30,.055),graphite);
-  const workbench = new THREE.Mesh(slab(12.98,5.98,.18,.33,.048),slate);
-  lower.position.y=-.365;
-  workbench.position.y=-.14;
-  scene.add(lower,workbench);
-  [-1,1].forEach(side=>block(scene,side*4.95,-.255,3.052,1.62,.045,.016,blueLight));
-  const grid = new THREE.GridHelper(12.7,26,0x4a71a0,0x263f61);
-  grid.scale.z=.45;
-  grid.position.y=.011;
-  grid.material.transparent=true;
-  grid.material.opacity=.38;
-  keep(grid.geometry);
-  keep(grid.material);
-  scene.add(grid);
-  const points=[];
-  for(let i=0;i<(compact?14:38);i++) points.push(-6.05+(i*.865)%12.1,.044,-2.83+(i*.417)%5.66);
-  const fasteners=keep(new THREE.BufferGeometry());
-  fasteners.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
-  scene.add(new THREE.Points(fasteners,keep(new THREE.PointsMaterial({color:0x86a7d2,size:.045,transparent:true,opacity:.6}))));
-
-  // Ledger docks are separated so each of the six cartridges has its own slot.
-  for(let i=0;i<6;i++) {
-    const [x,z]=ledger(i);
-    housing(stages[0],x,z,1.48,1.14,blue);
-    [-1,1].forEach(side=>block(stages[0],x+side*.59,.18,z,.045,.065,.67,lit));
-  }
-
-  // Four supported inputs converge on a glass funnel. Only the CSV carries sample orders.
-  const sourceX=[-4.65,-1.55,1.55,4.65];
-  const portNames=['CSV','Excel','API','SQL'];
-  const inputCables=[];
-  const apiGeometry=keep(new THREE.OctahedronGeometry(.43));
-  const sqlGeometry=keep(new THREE.CylinderGeometry(.45,.45,.62,18));
-  const sqlBand=keep(new THREE.CylinderGeometry(.476,.476,.045,18));
-  const dockZ=2.01;
-  sourceX.forEach((x,i)=>{
-    housing(stages[1],x,dockZ,1.52,1.28,i===0?lit:slate);
-    if(i===0) {
-      block(stages[1],x,.45,dockZ,.74,.56,.46,blue,trim);
-      [.38,.49,.60].forEach(y=>block(stages[1],x,y,dockZ+.239,.43,.021,.022,blueLight));
-    } else if(i===1) {
-      [.26,.41,.56].forEach(y=>block(stages[1],x,y,dockZ,.89,.092,.69,blue,trim));
-      [-1,0,1].forEach(offset=>block(stages[1],x+offset*.2,.61,dockZ,.014,.014,.52,blueLight));
-    } else if(i===2) {
-      const body=new THREE.Mesh(apiGeometry,lit);
-      body.position.set(x,.59,dockZ);
-      stages[1].add(body);
-      [-1,1].forEach(side=>block(stages[1],x+side*.49,.21,dockZ,.16,.09,.20,blueLight));
-    } else {
-      const body=new THREE.Mesh(sqlGeometry,blue);
-      body.position.set(x,.49,dockZ);
-      stages[1].add(body);
-      [.24,.48,.73].forEach(y=>{
-        const band=new THREE.Mesh(sqlBand,lit);
-        band.position.set(x,y,dockZ);
-        stages[1].add(band);
-      });
+    if (index===1) {
+      const u=ramp(t,.06+i*.043,.68+i*.053);
+      return {x:mix(-4.24,3.65,u),y:.39+Math.sin(Math.PI*u)*.74,z:mix((c-1)*1.09,(c-1)*.98,u)+(i>=3?.25:-.25),turn:Math.sin(u*Math.PI)*.42};
     }
-    const path=[[x,.109,1.31],[x,.109,.88],[x*.45,.109,.35],[0,.109,-.05]];
-    cable(stages[1],path,floorEdge);
-    inputCables.push(cable(stages[1],path,i===0?signal:dimSignal));
-  });
-  const funnelGeometry=keep(new THREE.CylinderGeometry(1.03,.51,.91,8,1,true));
-  const funnelGlass=face(0x5587c8,{metalness:.12,roughness:.28,transparent:true,opacity:.32,side:THREE.DoubleSide,depthWrite:false});
-  const funnel=new THREE.Mesh(funnelGeometry,funnelGlass);
-  funnel.position.set(0,.56,-.08);
-  funnel.add(new THREE.LineSegments(keep(new THREE.EdgesGeometry(funnelGeometry)),trim));
-  stages[1].add(funnel);
-  housing(stages[1],0,-.07,1.2,.97,blue);
-  cable(stages[1],[[0,.126,-.65],[0,.126,-1.38],[-2.06,.126,-2.03]],signal);
-  housing(stages[1],0,-1.98,5.8,1.56,blue);
-
-  // Gate, checked lane and a separate amber tray for the three exceptions.
-  [-1,1].forEach(side=>{
-    housing(stages[2],side*3.61,-.82,.61,.67);
-    block(stages[2],side*3.61,.87,-.82,.30,1.49,.38,graphite,trim);
-    block(stages[2],side*3.61,.95,-.615,.035,.83,.022,blueLight);
-  });
-  block(stages[2],0,1.66,-.82,7.47,.24,.43,slate,trim);
-  block(stages[2],0,1.58,-.587,7.10,.034,.028,blueLight);
-  housing(stages[2],0,.22,7.47,1.03,blue);
-  block(stages[2],0,.067,2.11,7.55,.127,1.16,amber,heldEdge);
-  [-1,1].forEach(side=>block(stages[2],0,.171,2.11+side*.57,7.55,.112,.048,amber,heldEdge));
-  const scanner=block(stages[2],0,.161,-.9,6.91,.013,.050,blueLight);
-  [-2.62,0,2.62].forEach(x=>{
-    cable(stages[2],[[x,.125,-2.53],[x,.125,-.82],[x,.151,.17]],signal);
-    cable(stages[2],[[x,.16,.41],[x+.4,.115,1.31],[x,.148,2.11]],heldEdge);
-    block(stages[2],x,.169,2.65,.19,.022,.033,amberLight);
-  });
-
-  // Table modules turn the star schema into a physical arrangement of rows and links.
-  function tableModule(x,z,width,depth,main) {
-    housing(stages[3],x,z,width,depth,main?lit:blue);
-    block(stages[3],x,.34,z,width*.88,.42,depth*.87,graphite,trim);
-    block(stages[3],x,.57,z,width*.88,.069,depth*.87,main?lit:blue,trim);
-    [.23,.35,.45].forEach(y=>block(stages[3],x,y,z+depth*.442,width*.56,.019,.022,blueLight));
+    if (index===2) {
+      const u=ramp(t,.06+i*.048,.66+i*.044);
+      const slot=row.ready?readyIndices.indexOf(i):heldIndices.indexOf(i);
+      const exit=ramp(u,.32,.90);
+      return {x:mix(-4.2,laneX[slot],u),y:.31+Math.sin(Math.PI*u)*.39,z:mix((c-1)*.54,row.ready?-1.1:1.27,exit),turn:Math.sin(u*Math.PI)*.32};
+    }
+    const slot=readyIndices.indexOf(i);
+    const u=ramp(t,.13+slot*.08,.72+slot*.075);
+    return {x:mix(-1.3,-1.13+slot,u),y:.34+Math.sin(Math.PI*u)*.37,z:mix(1.85,.76,u),turn:(1-u)*.63};
   }
-  tableModule(0,-.09,3.12,1.49,true);
-  const schemaCables=[];
-  [-1,1].forEach(side=>{
-    tableModule(4.37*side,-1.41,1.94,1.52,false);
-    const path=[[1.52*side,.127,-.09],[2.43*side,.127,-.09],[2.43*side,.127,-1.41],[3.38*side,.127,-1.41]];
-    cable(stages[3],path,floorEdge);
-    schemaCables.push(cable(stages[3],path,signal));
-  });
 
-  const barHeights=[0,0,0];
-  const bars=AMOUNTS.map((_,i)=>{
-    const x=columnX(i);
-    housing(stages[4],x,.1,1.81,1.61,blue);
-    const body=block(stages[4],x,.15,.1,1.19,.05,1.04,lit,trim);
-    const cap=block(stages[4],x,.17,.1,1.22,.065,1.07,blueLight);
-    return {body,cap};
-  });
-  [.68,1.43,2.18,2.93,3.68].forEach(y=>cable(stages[4],[[-4.25,y,-.98],[4.25,y,-.98]],floorEdge));
-
-  // Six beveled cartridges and their inlays remain instanced through all five scenes.
-  const tokenMaterial=face(0xffffff,{metalness:.3,roughness:.36,emissive:0x10213d,emissiveIntensity:.23});
-  const tokens=new THREE.InstancedMesh(slab(.92,.65,.17,.095,.031),tokenMaterial,6);
-  const inlays=new THREE.InstancedMesh(unit,glow(0xffffff),6);
-  const pixels=new Uint8Array(32*32*4);
-  for(let y=0;y<32;y++) for(let x=0;x<32;x++) {
-    const distance=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5);
-    pixels[(y*32+x)*4+3]=Math.round(133*Math.max(0,1-distance)**1.9);
+  let activeIndex=0, activeTrace=-1, activeDate='', activeT=0;
+  const totals=()=>readyOrders.filter(row=>!activeDate||row.date===activeDate);
+  const positions=new THREE.Vector3();
+  function project(x,y,z) {
+    positions.set(x,y,z).project(camera);
+    return {x:(positions.x+1)*50,y:(1-positions.y)*50};
   }
-  const shadowTexture=keep(new THREE.DataTexture(pixels,32,32,THREE.RGBAFormat));
-  shadowTexture.minFilter=shadowTexture.magFilter=THREE.LinearFilter;
-  shadowTexture.needsUpdate=true;
-  const shadowPlane=keep(new THREE.PlaneGeometry(1,1));
-  shadowPlane.rotateX(-Math.PI/2);
-  const shadowMaterial=keep(new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false}));
-  const shadows=new THREE.InstancedMesh(shadowPlane,shadowMaterial,6);
-  [tokens,inlays,shadows].forEach(mesh=>{
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    mesh.frustumCulled=false;
-    scene.add(mesh);
-  });
-
-  const markerGeometry=keep(new THREE.RingGeometry(.55,.596,24));
-  markerGeometry.rotateX(-Math.PI/2);
-  const traceMarker=new THREE.Mesh(markerGeometry,blueLight);
-  traceMarker.visible=false;
-  scene.add(traceMarker);
-  const transform=new THREE.Object3D();
-  const raw=new THREE.Color(0x879fbe), readyColor=new THREE.Color(0x5c8cff), heldColor=new THREE.Color(0xf59e0b);
-  const traceBlue=new THREE.Color(0xd9ebff), traceAmber=new THREE.Color(0xffcb70), tint=new THREE.Color();
-  const holdPositions=HELD.map(()=>new THREE.Vector3());
-  const rigs=[
-    [4.6,9.7,15.1,.43],[3.45,9.4,15.2,.52],[.28,10.2,15.0,.44],
-    [2.7,9.6,15.3,.5],[2.9,8.65,15.0,.89]
-  ];
-
-  function update(index,t,aspect,traced) {
-    stages.forEach((group,i)=>{group.visible=i===index;});
-    const rig=rigs[index], next=rigs[Math.min(index+1,rigs.length-1)];
-    const turn=ramp(t,.28,1);
-    camera.position.set(mix(rig[0],next[0],turn),mix(rig[1],next[1],turn),mix(rig[2],next[2],turn));
-    const width=Math.max(14.4,aspect*(index===2?6.72:8.72));
-    const height=width/aspect;
-    camera.left=-width/2; camera.right=width/2; camera.top=height/2; camera.bottom=-height/2;
-    look.set(0,mix(rig[3],next[3],turn),0);
-    camera.lookAt(look);
-    camera.updateProjectionMatrix();
-    camera.updateMatrixWorld();
-
-    if(index===1) inputCables.forEach((g,i)=>g.setDrawRange(0,Math.round(29*ramp(t,.08+i*.05,.54+i*.065))));
-    if(index===2) scanner.position.z=mix(-1.44,.45,ramp(t,.12,.85));
-    if(index===3) schemaCables.forEach((g,i)=>g.setDrawRange(0,Math.round(29*ramp(t,.16+i*.12,.74+i*.12))));
-    if(index===4) bars.forEach(({body,cap},i)=>{
-      const height=AMOUNTS[i]/120*3.25*ramp(t,.12+i*.065,.79+i*.065);
-      barHeights[i]=height;
-      body.scale.y=Math.max(.025,height);
-      body.position.y=.115+height/2;
-      cap.position.y=.15+height;
+  function labels() {
+    const tag=(text,x,y,z,kind='')=>({text,...project(x,y,z),kind});
+    if (activeIndex===1) return [
+      tag('CSV SOURCE',-4.24,.88,-.38),
+      tag('PYTHON',-.54,1.38,-.03,'accent'),
+      tag('6 STAGED ROWS',3.72,.89,-.59,'accent')
+    ];
+    if (activeIndex===2) return [
+      tag('VALIDATION',-1.61,1.99,-.33),
+      tag('3 READY',3.29,.93,-1.33,'accent'),
+      tag('3 HELD',3.49,.39,2.16,'review')
+    ];
+    if (activeIndex===3) {
+      const selected=readyOrders.find(row=>row.sourceIndex===activeTrace);
+      const current=selected||totals()[0]||readyOrders[0];
+      const total=totals().reduce((sum,row)=>sum+row.amount,0);
+      return [
+        tag(current.date,-4.15,1.15,-1.62,'date'),
+        tag('USD',-4.15,1.15,1.30,'accent'),
+        tag('APPROVED ORDERS',-.14,1.31,-.43),
+        tag('$'+total.toFixed(2),4.05,1.33,-.01,'value'),
+        tag(activeDate||'ALL DATES',4.04,.47,1.05)
+      ];
+    }
+    if (activeIndex===4) return [
+      ...columns.map(({row,x,cap})=>tag(activeT>.68?'$'+row.amount:row.date,x,cap.position.y+.37,.37,'accent')),
+      tag('$'+readyOrders.reduce((sum,row)=>sum+row.amount,0).toFixed(2),4.04,1.31,.05,'value'),
+      tag('APPROVED TOTAL',4.04,.50,1.52),
+      ...(activeT>.68?columns.map(({row,x})=>tag(row.date,x,.24,1.75,'date')):[])
+    ];
+    return [];
+  }
+  function heldPoints() {
+    return heldIndices.map(i=>{
+      const {group}=packets[i];
+      return project(group.position.x,group.position.y+.16,group.position.z);
     });
-    traceMarker.visible=false;
-    for(let i=0;i<6;i++) {
-      const state=tokenPose(index,t,i);
-      const size=Math.max(.001,state.scale);
+  }
+
+  function draw(index,t,width,height,mode,traced=-1,date='') {
+    activeIndex=index;
+    activeTrace=traced;
+    activeDate=date;
+    activeT=t;
+    groups.forEach((group,i)=>{group.visible=i===index;});
+    if (index===1) intakeSignal(ramp(t,.08,.94));
+    if (index===2) {
+      scan.position.x=mix(-2.22,-.92,ramp(t,.13,.80));
+      scan.visible=t>.08 && t<.92;
+      readySignal(ramp(t,.23,.76));
+      heldSignal(ramp(t,.34,.90));
+    }
+    if (index===3) {
+      joins.forEach((move,i)=>move(ramp(t,.07+i*.12,.69+i*.13)));
+      measure(ramp(t,.36,.91));
+    }
+    if (index===4) {
+      for (const [i,{row,column,cap}] of columns.entries()) {
+        const height=.045+row.amount/120*2.73*ramp(t,.11+i*.065,.80+i*.046);
+        column.scale.y=height;
+        column.position.y=.18+height/2;
+        column.material=row.sourceIndex===traced?silver:tealMetal;
+        cap.position.y=.18+height;
+      }
+      reportSignal(ramp(t,.40,.95));
+    }
+
+    traceRing.visible=false;
+    for (const {group,shell,strip,index:i} of packets) {
+      const row=orders[i];
       const selected=i===traced;
-      const color=state.held&&state.signal>.4?traceAmber:traceBlue;
-      tint.copy(raw).lerp(state.held?heldColor:readyColor,state.signal);
-      if(selected) tint.lerp(color,.56);
-      transform.rotation.set(0,state.turn,0);
-      transform.position.set(state.x,state.y,state.z);
-      transform.scale.setScalar(size);
-      transform.updateMatrix();
-      tokens.setMatrixAt(i,transform.matrix);
-      tokens.setColorAt(i,tint);
-      transform.position.y+=.119*size;
-      transform.scale.set(.52*size,.022*size,.080*size);
-      transform.updateMatrix();
-      inlays.setMatrixAt(i,transform.matrix);
-      inlays.setColorAt(i,selected?color:tint);
-      transform.position.set(state.x,.151,state.z);
-      transform.scale.set(1.67*size,1,1.25*size);
-      transform.updateMatrix();
-      shadows.setMatrixAt(i,transform.matrix);
-      if(state.held) holdPositions[HELD.indexOf(i)].set(state.x,state.y+.25,state.z);
-      if(selected&&state.scale>.22) {
-        traceMarker.visible=true;
-        traceMarker.material=state.held&&state.signal>.4?amberLight:blueLight;
-        traceMarker.position.set(state.x,state.y-.09*size,state.z);
-        traceMarker.scale.setScalar(size);
+      group.visible=index<3 || (index===3 && row.ready===true);
+      if (!group.visible) continue;
+      const move=flight(i,index,t);
+      const held=index===2&&!row.ready;
+      const filtered=index===3&&date&&row.date!==date;
+      group.position.set(move.x,move.y-(filtered?.18:0),move.z);
+      group.rotation.y=move.turn;
+      group.scale.setScalar(filtered?.72:1);
+      shell.material=filtered?quiet:held?warmMetal:selected?silver:index>=2?tealMetal:raw;
+      strip.material=filtered?dim:held?amber:selected||index<2?blue:teal;
+      if (selected && !filtered) {
+        traceRing.visible=true;
+        traceRing.material=held?amber:blue;
+        traceRing.position.set(move.x,move.y-.065,move.z);
       }
     }
-    [tokens,inlays,shadows].forEach(mesh=>{mesh.instanceMatrix.needsUpdate=true;});
-    tokens.instanceColor.needsUpdate=inlays.instanceColor.needsUpdate=true;
-  }
 
-  function draw(index,t,width,height,mode,traced=-1) {
-    update(index,t,width/height,traced);
-    renderer.setClearColor(mode==='stage'?0x080f1b:0x000000,mode==='stage'?1:0);
+    const aspect=width/height;
+    const w=Math.max(13.55,aspect*7.47);
+    const h=w/aspect;
+    camera.left=-w/2; camera.right=w/2;
+    camera.top=h/2; camera.bottom=-h/2;
+    const cameraX=mode==='hero'?-5.1:mix(-1.9,1.28,ramp(t,0,1));
+    camera.position.set(cameraX,index===4?8.3:8.9,14.6);
+    camera.lookAt(0,index===4?.91:.36,0);
+    camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
+    scene.background=mode==='stage'?atmosphere:null;
+    renderer.setClearColor(0x0b1422,mode==='stage'?1:0);
     renderer.clear(true,true,true);
     renderer.render(scene,camera);
   }
-
-  const projection=new THREE.Vector3();
-  function project(point) {
-    projection.copy(point).project(camera);
-    return {x:(projection.x+1)*50,y:(1-projection.y)*50};
-  }
-  function labels(index,t) {
-    if(index===1) return sourceX.map((x,i)=>({text:portNames[i],...project(projection.set(x,.13,2.77))}));
-    if(index===3&&t>.13) return [
-      ['DimDate',-4.37,1.05,-1.41],['FactReadyOrders',0,1.12,-.09],['DimCurrency',4.37,1.05,-1.41]
-    ].map(([text,x,y,z])=>({text,...project(projection.set(x,y,z))}));
-    if(index===4&&t>=.69) return AMOUNTS.map((amount,i)=>({
-      text:'$'+amount,...project(projection.set(columnX(i),barHeights[i]+.62,.1))
-    }));
-    return [];
-  }
-  return {draw,labels,heldPoints:()=>holdPositions.map(project),dispose(){
-    [tokens,inlays,shadows].forEach(mesh=>mesh.dispose());
-    resources.forEach(item=>item.dispose());
+  return {draw,heldPoints,labels,dispose(){
+    resources.forEach(resource=>resource.dispose());
     scene.clear();
   }};
 }
 
+
+
+
 function validationOverlay(view) {
   const group=view.querySelector('.room-token-controls');
-  const caption=view.parentElement.querySelector('.room-display-note');
-  const defaultNote='Portfolio project / sample data';
+  const caption=view.parentElement.querySelector('#room-display-message');
+  const initialNote='Follow a source row through checks, modelling and reporting.';
+  let stageNote=initialNote;
   const source=[...document.querySelectorAll('#scene-validate .room-held details')];
   let hovered=-1, focused=-1, selected=-1;
   const buttons=source.map((detail,i)=>{
@@ -429,15 +432,23 @@ function validationOverlay(view) {
   });
   function explain() {
     const i=hovered!==-1?hovered:focused!==-1?focused:selected;
-    caption.textContent=i===-1?defaultNote:defaultNote+' · '+buttons[i].label+' — '+buttons[i].reason;
+    const message=i===-1?stageNote:buttons[i].label+' · '+buttons[i].reason;
+    if (caption.textContent!==message) caption.textContent=message;
     buttons.forEach(({button},index)=>button.setAttribute('aria-pressed',String(index===selected)));
   }
   return {
+    setNote(note=initialNote) {
+      if (note===stageNote) return;
+      stageNote=note;
+      explain();
+    },
     show(points,rect) {
       if(points && points.length===buttons.length) {
         buttons.forEach(({button},i)=>{
-          button.style.setProperty('--token-x',(points[i].x*rect.width/100).toFixed(1)+'px');
-          button.style.setProperty('--token-y',(points[i].y*rect.height/100).toFixed(1)+'px');
+          const x=clamp(points[i].x*rect.width/100,22,rect.width-22);
+          const y=clamp(points[i].y*rect.height/100,22,rect.height-22);
+          button.style.setProperty('--token-x',x.toFixed(1)+'px');
+          button.style.setProperty('--token-y',y.toFixed(1)+'px');
         });
         group.hidden=false;
       } else if(!group.hidden) {
@@ -452,6 +463,31 @@ function validationOverlay(view) {
 }
 
 const STAGE_NAMES=['Ledger','Ingest','Validate','Model','Report'];
+const STAGE_NOTES=[
+  '',
+  'Python stages six CSV rows and keeps a link to the original file.',
+  'Checks on IDs, dates and amounts separate ready rows from exceptions.',
+  'Date and currency keys let clients filter the same approved orders in Power BI.',
+  'Power BI reports the approved total of USD 267.00.'
+];
+
+function workflowNote(index, traced, date) {
+  const selected=orders[traced];
+  if (index===3 && date && selected?.ready && selected.date!==date) {
+    return selected.id+' is outside the '+date+' filter. The total reflects approved orders on that date.';
+  }
+  if (traced === 0) return [
+    '',
+    'A-101 enters from orders_sample.csv with its USD 120.00 amount.',
+    'A-101 passes the ID, date and amount checks.',
+    'A-101 joins the date and currency tables as one row in FactReadyOrders.',
+    'A-101 contributes USD 120.00 to the Power BI total of USD 267.00.'
+  ][index];
+  if (index>=3 && HELD.includes(traced)) {
+    return 'The selected row is held for review and stays out of the approved total.';
+  }
+  return STAGE_NOTES[index];
+}
 
 export function mountRoomScene(canvas,context,{compact,onFailure}) {
   const root=document.documentElement;
@@ -462,20 +498,21 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
   const display=shell.querySelector('.room-display-view');
   const currentLabel=story.querySelector('#room-current-scene');
   const sceneRail=story.querySelector('.room-stage-rail');
+  const veil=display.querySelector('.room-scene-veil');
   const overlay=validationOverlay(display);
-  const labels=[...display.querySelectorAll('.room-instrument-labels span')];
-  function showLabels(entries,rect,index) {
-    labels.forEach((label,i)=>{
+  const liveLabels=[...display.querySelectorAll('.room-live-labels span')];
+  function showLabels(entries,rect) {
+    liveLabels.forEach((label,i)=>{
       const entry=entries[i];
       label.hidden=!entry;
-      if(!entry) return;
-      const edge=entry.text.length*2.75+5;
+      if (!entry) return;
+      if (label.textContent!==entry.text) label.textContent=entry.text;
+      if (label.className!==entry.kind) label.className=entry.kind;
+      const edge=entry.kind==='value'?41:5+entry.text.length*2.65;
       const x=clamp(entry.x*rect.width/100,edge,rect.width-edge);
-      const y=clamp(entry.y*rect.height/100+(rect.height<145&&entry.text==='FactReadyOrders'?8:0),9,rect.height-9);
-      label.textContent=entry.text;
-      label.classList.toggle('report-label',index===4);
-      label.style.setProperty('--label-x',x.toFixed(1)+'px');
-      label.style.setProperty('--label-y',y.toFixed(1)+'px');
+      const y=clamp(entry.y*rect.height/100,13,rect.height-13);
+      label.style.setProperty('--live-x',x.toFixed(1)+'px');
+      label.style.setProperty('--live-y',y.toFixed(1)+'px');
     });
   }
   const renderer=new THREE.WebGLRenderer({canvas,context});
@@ -493,6 +530,7 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
   const subscriptions=new AbortController(), signal=subscriptions.signal;
   let raf=0, enabled=false, ended=false, metricsDirty=true, viewportWidth=0, viewportHeight=0;
   let anchors=[], reportEnd=0, readingOffset=0, drawnPose=NaN, lastIndex=-1, renderKey='', lastFrame=0;
+  let stageTransition=null, veilOpacity=0;
   let previousChain=false, slow=0, quality=1, surfaceWidth=0, surfaceHeight=0, surfaceRatio=0, surfacePosition="";
 
   const resize=new ResizeObserver(()=>{metricsDirty=true; queue();});
@@ -515,17 +553,47 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
   }
   function aperture(mode) {
     if(mode==='stage') return display.getBoundingClientRect();
-    if(mode==='park') {
-      const w=Math.min(viewportWidth*.52,760), h=Math.min(viewportHeight*.62,520);
-      return {left:viewportWidth-w,top:viewportHeight-h,width:w,height:h};
-    }
     const rect=ledgerPanel.getBoundingClientRect();
     const padX=viewportWidth<860?12:64, padY=viewportWidth<860?35:82;
     return {left:rect.left-padX,top:rect.top-padY,width:rect.width+2*padX,height:rect.height+2*padY};
   }
+  function paintVeil(opacity) {
+    const rounded=Math.round(opacity*100)/100;
+    if (rounded===veilOpacity) return;
+    veilOpacity=rounded;
+    veil.style.opacity=String(rounded);
+  }
+  function stageTarget(value,mode,now) {
+    const current=scenePose(drawnPose).index;
+    const destination=scenePose(value).index;
+    if (mode!=='stage' || !Number.isFinite(current) || current===0) {
+      stageTransition=null;
+      paintVeil(0);
+      return value;
+    }
+    if (stageTransition && now-stageTransition.start>=STAGE_TRANSITION_MS) {
+      stageTransition=null;
+      paintVeil(0);
+    }
+    if (!stageTransition && current!==destination) {
+      stageTransition={start:now,switched:false};
+    }
+    if (!stageTransition) return value;
+    const phase=(now-stageTransition.start)/STAGE_TRANSITION_MS;
+    paintVeil(ramp(phase,0,.42)*(1-ramp(phase,.55,1)));
+    if (phase<.46) return drawnPose;
+    if (!stageTransition.switched) {
+      stageTransition.switched=true;
+      return value;
+    }
+    return current===destination?value:drawnPose;
+  }
   function clearSurface() {
-    root.classList.remove('room-3d','room-stage-open','room-parked','room-hero-live');
+    stageTransition=null;
+    paintVeil(0);
+    root.classList.remove('room-3d','room-stage-open','room-hero-live');
     overlay.show(null);
+    overlay.setNote();
     showLabels([]);
     if(lastIndex!==-1){currentLabel.textContent='SCENE PREVIEW';lastIndex=-1;}
   }
@@ -537,17 +605,18 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
     if(!enabled||ended) return;
     if(metricsDirty||window.innerWidth!==viewportWidth||window.innerHeight!==viewportHeight) readLayout();
     const target=roomProgress(window.scrollY,viewportHeight,anchors,reportEnd,readingOffset);
-    const mode=target.parked?'park':target.value>=1?'stage':'hero';
+    const mode=target.value>=1?'stage':'hero';
     const rect=aperture(mode);
     const onScreen=rect.width>32&&rect.height>32&&rect.left+rect.width>0&&rect.left<viewportWidth&&rect.top+rect.height>0&&rect.top<viewportHeight;
     if(!onScreen){
-      clearSurface(); renderKey=''; lastFrame=0; previousChain=false;
+      clearSurface(); renderKey=''; drawnPose=NaN; lastFrame=0; previousChain=false;
       return;
     }
     const dt=lastFrame?Math.min(40,Math.max(0,now-lastFrame)):16;
-    drawnPose=followScenePose(drawnPose,target.value,dt);
-    const settling=Math.abs(target.value-drawnPose)>.002;
-    if(!settling) drawnPose=target.value;
+    const desired=stageTarget(target.value,mode,now);
+    drawnPose=followScenePose(drawnPose,desired,dt);
+    const settling=Math.abs(desired-drawnPose)>.002;
+    if(!settling) drawnPose=desired;
     const {index,t}=scenePose(drawnPose);
     const width=Math.ceil(rect.width), height=Math.ceil(rect.height);
     const density=Math.min(window.devicePixelRatio||1,compact?1.35:1.85)*quality;
@@ -559,7 +628,8 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
       surfacePosition=position;
     }
     const traced=root.dataset.roomTrace===undefined?-1:Number(root.dataset.roomTrace);
-    const key=[mode,width,height,ratio,drawnPose.toFixed(4),traced].join('|');
+    const date=index===3?(root.dataset.roomDate||''):'';
+    const key=[mode,width,height,ratio,drawnPose.toFixed(4),traced,date].join('|');
     if(renderKey!==key) {
       try {
         if(width!==surfaceWidth||height!==surfaceHeight||ratio!==surfaceRatio){
@@ -567,7 +637,7 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
           canvas.style.width=width+'px'; canvas.style.height=height+'px';
           surfaceWidth=width; surfaceHeight=height; surfaceRatio=ratio;
         }
-        world.draw(index,t,width,height,mode,traced);
+        world.draw(index,t,width,height,mode,traced,date);
         renderKey=key;
       } catch {
         fail();
@@ -579,11 +649,11 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
       }
       if(!root.classList.contains('room-3d')) root.classList.add('room-3d');
       root.classList.toggle('room-stage-open',mode==='stage');
-      root.classList.toggle('room-parked',mode==='park');
       root.classList.toggle('room-hero-live',mode==='hero');
       sceneRail.style.setProperty('--scene-progress',(drawnPose/5).toFixed(4));
-      overlay.show(mode==='stage'&&index===2&&t>=.77?world.heldPoints():null,rect);
-      showLabels(mode==='stage'?world.labels(index,t):[],rect,index);
+      overlay.show(mode==='stage'&&index===2&&t>=.84?world.heldPoints():null,rect);
+      showLabels(mode==='stage'?world.labels():[],rect);
+      overlay.setNote(mode==='stage'?workflowNote(index,traced,date):undefined);
 
       if(previousChain && lastFrame) {
         const elapsed=now-lastFrame;
@@ -598,15 +668,15 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
     }
     lastFrame=now;
     previousChain=settling;
-    if(settling||metricsDirty) queue();
+    if(settling||stageTransition||metricsDirty) queue();
   }
   function scroll() {
-    if(renderKey.startsWith('park|')&&!metricsDirty&&window.scrollY+readingOffset>=reportEnd) return;
+    if(!renderKey&&!metricsDirty&&window.scrollY>=reportEnd) return;
     queue();
   }
   function stop(){
     if(raf) cancelAnimationFrame(raf);
-    raf=0; previousChain=false; lastFrame=0; renderKey='';
+    raf=0; previousChain=false; lastFrame=0; renderKey=''; drawnPose=NaN;
     clearSurface();
     root.classList.remove('room-enhanced');
   }
@@ -625,6 +695,7 @@ export function mountRoomScene(canvas,context,{compact,onFailure}) {
   }
   canvas.addEventListener('webglcontextlost',fail,{signal});
   document.addEventListener('room-trace-change',queue,{signal});
+  document.addEventListener('room-model-filter',queue,{signal});
   addEventListener('scroll',scroll,{passive:true,signal});
   addEventListener('resize',()=>{metricsDirty=true; queue();},{passive:true,signal});
   document.fonts?.ready.then(()=>{if(!ended){metricsDirty=true; queue();}});

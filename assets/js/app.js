@@ -540,23 +540,94 @@
     const displayTrace = $('#room-display-trace');
     const root = document.documentElement;
     traceResult.hidden = false;
+    function selectTrace(button, selected) {
+      if (selected) root.dataset.roomTrace = button.dataset.traceOrder;
+      else delete root.dataset.roomTrace;
+      traceButtons.forEach(candidate => press(candidate,selected && candidate === button));
+      traceResult.textContent = selected
+        ? button.dataset.traceName + '. ' + button.dataset.traceOutcome
+        : 'Select an order to trace it through the room.';
+      displayTrace.textContent = selected ? 'Trace ' + button.dataset.traceName : '';
+      displayTrace.hidden = !selected;
+      document.dispatchEvent(new Event('room-trace-change'));
+    }
     traceButtons.forEach(button => {
       button.disabled = false;
-      button.addEventListener('click', () => {
-        const order = button.dataset.traceOrder;
-        const selected = root.dataset.roomTrace !== order;
-        if(selected) root.dataset.roomTrace = order;
-        else delete root.dataset.roomTrace;
-        traceButtons.forEach(candidate => press(candidate,selected && candidate === button));
-        traceResult.textContent = selected
-          ? button.dataset.traceName + '. ' + button.dataset.traceOutcome
-          : 'Select an order to trace it through the room.';
-        displayTrace.textContent = selected ? 'Trace ' + button.dataset.traceName : '';
-        displayTrace.hidden = !selected;
-        document.dispatchEvent(new Event('room-trace-change'));
-      });
+      button.addEventListener('click', () => selectTrace(button, root.dataset.roomTrace !== button.dataset.traceOrder));
     });
+    const walkthrough = $('[data-room-walkthrough]');
+    const sample = traceButtons.find(button => button.dataset.traceOrder === '0');
+    if (walkthrough && sample) {
+      walkthrough.addEventListener('click', () => selectTrace(sample,true));
+    }
   }
+
+  const lineageFilters = $('.lineage-filters');
+  if (lineageFilters) {
+    const rows = $$('#scene-report .room-report-table tbody tr').map(row=>({
+      id:row.cells[0].textContent.trim(),
+      date:row.cells[1].textContent.trim(),
+      amount:Number(row.cells[2].textContent.trim())
+    }));
+    const buttons = [...lineageFilters.querySelectorAll('[data-lineage-date]')];
+    const scope = $('[data-lineage-scope]');
+    const total = $('[data-lineage-total]');
+    const included = $('[data-lineage-orders]');
+    const currency = new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const list = new Intl.ListFormat('en',{style:'long',type:'conjunction'});
+
+    function setDate(date) {
+      const matches = date ? rows.filter(row=>row.date===date) : rows;
+      const count = matches.length;
+      const amount = matches.reduce((sum,row)=>sum+row.amount,0);
+      scope.textContent = (date||'All dates')+' · '+count+' approved '+(count===1?'order':'orders');
+      total.textContent = 'USD '+currency.format(amount);
+      included.textContent = list.format(matches.map(row=>row.id))+(count===1?' contributes.':' contribute.');
+      buttons.forEach(button=>press(button,button.dataset.lineageDate===date));
+      document.documentElement.dataset.roomDate = date;
+      document.dispatchEvent(new Event('room-model-filter'));
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>setDate(button.dataset.lineageDate)));
+    lineageFilters.hidden = false;
+  }
+
+
+  const reportPreview = $('.room-report-preview');
+  const scriptUrl = document.currentScript?.src;
+  if (reportPreview && scriptUrl) {
+    const previewCanvas = reportPreview.querySelector('canvas');
+    const status = reportPreview.querySelector('[role="status"]');
+    let drawReport, reportLoading=false;
+    function paintReport() {
+      if (drawReport && reportPreview.open) {
+        const traced = Number(document.documentElement.dataset.roomTrace ?? -1);
+        drawReport(traced,1);
+      }
+    }
+    reportPreview.addEventListener('toggle', async () => {
+      if (!reportPreview.open) return;
+      if (!drawReport && !reportLoading) {
+        reportLoading=true;
+        try {
+          const [{createReportArtwork},{orders,readyOrders}] = await Promise.all([
+            import(new URL('workstation.js',scriptUrl)),
+            import(new URL('journey.js',scriptUrl))
+          ]);
+          drawReport = createReportArtwork(previewCanvas,reportPreview.clientWidth<460,readyOrders,orders.length-readyOrders.length);
+          previewCanvas.hidden = false;
+          status.hidden = true;
+        } catch {
+          status.textContent = 'The sample amounts are in the table above.';
+        } finally {
+          reportLoading=false;
+        }
+      }
+      paintReport();
+    });
+    document.addEventListener('room-trace-change',paintReport);
+  }
+
+
   document.documentElement.classList.add('js','ready');
 })();
 

@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-<div id="ambient-room" class="ambient-room" aria-hidden="true" inert><div class="ambient-lights"></div><div class="ambient-grid"></div><span class="ambient-lane ambient-lane-a"><i></i></span><span class="ambient-lane ambient-lane-b"><i></i></span><span class="ambient-lane ambient-lane-c"><i></i></span></div>
+<div id="ambient-room" class="ambient-room" aria-hidden="true" inert><div class="ambient-lights"></div></div>
 <div id="room-world-layer" aria-hidden="true"><canvas id="room-world" aria-hidden="true"></canvas></div>
 <div id="progress" data-reveal class="in" aria-hidden="true"></div>
 <a class="skip-link" href="#top">Skip to main content</a>
@@ -79,21 +79,22 @@
   </div>
 </section>
 <section id="pipeline" class="section flow-section" aria-labelledby="pipeline-title"><div class="container">
-<div class="sec-head" data-reveal><div><span class="eyebrow">Inside the pipeline</span><h2 id="pipeline-title" class="h-sec">One connected<br>data workflow.</h2></div><p class="right">Explore the path from a source file to a report-ready model. Select a stage to inspect its tools, checks and output using the same six sample records.</p></div>
+<div class="sec-head" data-reveal><div><span class="eyebrow">Inside the pipeline</span><h2 id="pipeline-title" class="h-sec">One connected<br>data workflow.</h2></div><div class="room-intro-actions"><p class="right">See how I turn raw orders into a Power BI report. Follow a sample order from its CSV row through Python and SQL Server to the Power BI total.</p><a class="room-walkthrough" data-room-walkthrough href="#scene-ingest">Follow sample order A-101 <span aria-hidden="true">↘</span></a></div></div>
 <div class="room-story">
 <div class="room-display" aria-label="Data Room scene preview">
-  <div class="room-display-top"><span><i aria-hidden="true"></i> DATA ROOM</span><span id="room-display-trace" class="room-display-trace" aria-hidden="true" hidden></span><span id="room-current-scene" aria-hidden="true">SCENE PREVIEW</span><div class="room-stage-rail" aria-hidden="true"><span></span></div></div>
+  <div class="room-display-top"><span><i aria-hidden="true"></i> WORKFLOW VIEWER</span><span id="room-display-trace" class="room-display-trace" aria-hidden="true" hidden></span><span id="room-current-scene" aria-hidden="true">SCENE PREVIEW</span><div class="room-stage-rail" aria-hidden="true"><span></span></div></div>
   <div class="room-display-view">
     <div class="room-display-grid" aria-hidden="true"></div>
     <div class="room-display-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <div class="room-instrument-labels" aria-hidden="true"><span hidden></span><span hidden></span><span hidden></span><span hidden></span></div>
+    <div class="room-live-labels" aria-hidden="true"><span hidden></span><span hidden></span><span hidden></span><span hidden></span><span hidden></span><span hidden></span><span hidden></span><span hidden></span></div>
+    <div class="room-scene-veil" aria-hidden="true"></div>
     <div class="room-token-controls" role="group" aria-label="Held sample orders" hidden></div>
   </div>
-  <p class="room-display-note" id="room-display-note">Portfolio project / sample data</p>
+  <p class="room-display-note" id="room-display-note"><span class="room-display-caption"><span class="room-display-sample">Portfolio project / sample data</span><span id="room-display-message">Follow a source row through checks, modelling and reporting.</span></span></p>
 </div>
 <div class="room-chapters">
   <article class="room-chapter" id="scene-ingest" data-room-scene="ingest" aria-labelledby="scene-ingest-title">
-    <div class="room-chapter-copy"><p class="room-chapter-number">01 / SOURCE INTAKE</p><h3 id="scene-ingest-title">Bring the inputs together.</h3><p>CSV, Excel, API and SQL can feed a staging layer. In this example, all six rows come from one CSV and keep their original values.</p><p class="room-sample">Portfolio project / sample data</p></div>
+    <div class="room-chapter-copy"><p class="room-chapter-number">01 / SOURCE INTAKE</p><h3 id="scene-ingest-title">Load the source with Python.</h3><p>Python loads all six orders from one CSV and keeps their original values. Excel, APIs and SQL databases are other inputs I can connect.</p><p class="room-sample">Portfolio project / sample data</p></div>
     <div class="room-chapter-visual room-ingest">
       <ul aria-label="Supported source examples"><li>CSV</li><li>Excel</li><li>API</li><li>SQL</li></ul>
       <svg viewBox="0 0 360 46" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M45 0v8l135 36M135 0v8l45 36M225 0v8l-45 36M315 0v8L180 44" stroke="currentColor" vector-effect="non-scaling-stroke"/><circle cx="180" cy="43" r="3" fill="currentColor"/></svg>
@@ -101,7 +102,7 @@
     </div>
   </article>
   <article class="room-chapter" id="scene-validate" data-room-scene="validate" aria-labelledby="scene-validate-title">
-    <div class="room-chapter-copy"><p class="room-chapter-number">02 / VALIDATION GATE</p><h3 id="scene-validate-title">Keep exceptions visible.</h3><p>Three orders are ready. Three need review and stay out of the report total. Open a held record to see the reason.</p><p class="room-sample">Portfolio project / sample data</p></div>
+    <div class="room-chapter-copy"><p class="room-chapter-number">02 / VALIDATION GATE</p><h3 id="scene-validate-title">Check each order before reporting.</h3><p>I check order IDs, dates and amounts. Three orders pass. The other three stay in a review list with the reason each was held.</p><p class="room-sample">Portfolio project / sample data</p></div>
     <div class="room-chapter-visual room-validate">
       <div class="room-lane"><strong>3 ready</strong><ul aria-label="Ready order IDs"><li>A-101</li><li>A-102</li><li>A-105</li></ul></div>
       <div class="room-lane room-held"><strong>3 held for review</strong>
@@ -112,23 +113,54 @@
     </div>
   </article>
   <article class="room-chapter" id="scene-model" data-room-scene="model" aria-labelledby="scene-model-title">
-    <div class="room-chapter-copy"><p class="room-chapter-number">03 / REPORTING MODEL</p><h3 id="scene-model-title">Give each order a place.</h3><p><code>FactReadyOrders</code> stores one row per ready order. Date and currency dimensions keep the reporting definitions consistent.</p><p class="room-sample">Portfolio project / sample data</p></div>
-    <div class="room-chapter-visual room-model" aria-label="DimDate and DimCurrency linked to FactReadyOrders">
-      <div><span>FACT</span><strong>FactReadyOrders</strong></div>
-      <svg viewBox="0 0 320 35" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M160 0v15H80v20m80-20h80v20" stroke="currentColor" vector-effect="non-scaling-stroke"/></svg>
-      <ul><li><span>DIMENSION</span><strong>DimDate</strong></li><li><span>DIMENSION</span><strong>DimCurrency</strong></li></ul>
+    <div class="room-chapter-copy">
+      <p class="room-chapter-number">03 / REPORTING MODEL</p>
+      <h3 id="scene-model-title">Follow an order all the way to the total.</h3>
+      <p>SQL Server keeps one row per approved order and links it to date and currency tables. Try a date to see which orders contribute to the Power BI total.</p>
+      <p class="room-sample">Portfolio project / sample data</p>
+    </div>
+    <div class="room-chapter-visual room-lineage">
+      <fieldset class="lineage-filters" hidden>
+        <legend>Try the date filter</legend>
+        <div class="lineage-options">
+          <button type="button" data-lineage-date="" aria-pressed="true" aria-controls="lineage-result">All dates</button>
+          <button type="button" data-lineage-date="01 Oct" aria-pressed="false" aria-controls="lineage-result">01 Oct</button>
+          <button type="button" data-lineage-date="02 Oct" aria-pressed="false" aria-controls="lineage-result">02 Oct</button>
+          <button type="button" data-lineage-date="05 Oct" aria-pressed="false" aria-controls="lineage-result">05 Oct</button>
+        </div>
+      </fieldset>
+      <p class="lineage-result" id="lineage-result" role="status">
+        <span data-lineage-scope>All dates · 3 approved orders</span>
+        <strong data-lineage-total>USD 267.00</strong>
+        <span data-lineage-orders>A-101, A-102 and A-105 contribute.</span>
+      </p>
+      <details class="lineage-details">
+        <summary>How the SQL tables connect</summary>
+        <p><code>FactReadyOrders</code> links to <code>DimDate</code> and <code>DimCurrency</code>. Each date or currency can match many orders. Held rows stay in the review list.</p>
+      </details>
+      <a class="lineage-next" href="#scene-report">See the report for all dates <span aria-hidden="true">↓</span></a>
     </div>
   </article>
   <article class="room-chapter" id="scene-report" data-room-scene="report" aria-labelledby="scene-report-title">
-    <div class="room-chapter-copy"><p class="room-chapter-number">04 / REPORT OUTPUT</p><h3 id="scene-report-title">Show what passed.</h3><p>The report adds only the ready orders. The held records remain available for review.</p><p class="room-sample">Portfolio project / sample data</p></div>
+    <div class="room-chapter-copy"><p class="room-chapter-number">04 / REPORT OUTPUT</p><h3 id="scene-report-title">Publish the approved total in Power BI.</h3><p>The report adds the three approved orders for a total of USD 267.00. The order breakdown shows exactly where the number comes from.</p><p class="room-sample">Portfolio project / sample data</p></div>
     <div class="room-chapter-visual room-report">
       <div><span>READY-ORDER TOTAL</span><strong>USD 267.00</strong></div>
-      <ul aria-label="Three ready-order amounts in USD">
-        <li><span>A-101</span><i aria-hidden="true" style="--amount:100%"></i><b>120</b></li>
-        <li><span>A-102</span><i aria-hidden="true" style="--amount:74.167%"></i><b>89</b></li>
-        <li><span>A-105</span><i aria-hidden="true" style="--amount:48.333%"></i><b>58</b></li>
-      </ul>
-      <p>Sample data, not client results.</p>
+      <p class="room-report-period">1–5 October 2026 · 3 approved · 3 held for review</p>
+      <table class="room-report-table">
+        <caption class="sr-only">Approved orders by date, sample data</caption>
+        <thead><tr><th scope="col">Order</th><th scope="col">Date</th><th scope="col">USD</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">A-101</th><td>01 Oct</td><td>120.00</td></tr>
+          <tr><th scope="row">A-102</th><td>02 Oct</td><td>89.00</td></tr>
+          <tr><th scope="row">A-105</th><td>05 Oct</td><td>58.00</td></tr>
+        </tbody>
+      </table>
+      <p>Illustrative report with sample data.</p>
+      <details class="room-report-preview">
+        <summary>Open the full Power BI preview</summary>
+        <p role="status">The sample amounts are listed above.</p>
+        <canvas role="img" aria-label="Sample Power BI report with three approved orders, three held records and a total of USD 267.00" hidden></canvas>
+      </details>
     </div>
   </article>
 </div>
