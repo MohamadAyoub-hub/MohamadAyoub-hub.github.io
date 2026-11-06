@@ -282,7 +282,6 @@ html[data-theme="light"] .room-ledger{background:var(--surface);box-shadow:var(-
 }
 @media(max-width:359px){.room-nav-work{display:none}}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.room-poster{opacity:.22}.room-ledger{background:var(--surface)}}
-html[data-theme="light"] .ambient-lights{animation:none}
 
 #room-world-layer{position:fixed;inset:0;z-index:0;contain:paint;pointer-events:none;opacity:0}
 #room-world{position:fixed;top:0;left:0;display:block;width:0;height:0;pointer-events:none}
@@ -333,8 +332,8 @@ html[data-theme="light"] .ambient-lights{animation:none}
 @media(prefers-reduced-motion:reduce),(prefers-reduced-transparency:reduce),(prefers-contrast:more),(forced-colors:active){
   #room-world{display:none!important}
 }
-html[data-theme="light"] #room-world,html.motion-paused #room-world{visibility:hidden}
-html[data-theme="light"] .room-display-view{background-color:#edf2f8;background-blend-mode:luminosity}
+html.motion-paused #room-world{visibility:hidden}
+html[data-theme="light"]:not(.room-stage-open) .room-display-view{background-color:#edf2f8;background-blend-mode:luminosity}
 
 /* Final keyboard and touch layout */
 .mobile-links{max-block-size:calc(100dvh - 6rem);overflow-y:auto;overscroll-behavior:contain}

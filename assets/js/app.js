@@ -144,8 +144,7 @@
   const numberFormat = new Intl.NumberFormat('en-US');
   const fmt = (element, value) => element.dataset.format === 'pct'
     ? value.toFixed(1) + '%' : numberFormat.format(Math.round(value));
-  const isLight = () => document.documentElement.dataset.theme === 'light';
-  const staticMode = () => reduce || manualPause || isLight();
+  const staticMode = () => reduce || manualPause;
   const allowed = () => !staticMode() && !document.hidden && !dialog?.open;
   function active() {
     return allowed() && ((pipeVisible && pathLength > 0) || (logVisible && !logDone) || [...counters.values()].some(task => task.visible));
@@ -242,9 +241,9 @@
     reduce = motion.matches;
     document.documentElement.classList.toggle('motion-paused', staticMode());
     if (motionToggle) {
-      motionToggle.disabled = reduce || isLight();
+      motionToggle.disabled = reduce;
       press(motionToggle,staticMode());
-      motionToggle.setAttribute('aria-label', reduce ? 'Reduced motion is enabled' : isLight() ? 'Animations are off in light mode' : manualPause ? 'Play animations' : 'Pause animations');
+      motionToggle.setAttribute('aria-label', reduce ? 'Reduced motion is enabled' : manualPause ? 'Play animations' : 'Pause animations');
     }
     if (staticMode()) {
       revealTargets.forEach(reveal);
@@ -443,7 +442,6 @@
   if (themes.length) {
     themes.forEach(button => { button.disabled = false; button.addEventListener('click', () => {
       document.documentElement.dataset.theme = button.dataset.theme;
-      syncMotion();
       themes.forEach(item => press(item,item === button));
       $('#theme-status').textContent = button.textContent.trim() + ' theme selected.';
     }); });
@@ -581,7 +579,7 @@
   function canPlay() {
     const compact=compactQuery.matches;
     return !destroyed && !pagePaused && !document.hidden && !calm.matches && !connection?.saveData
-      && root.classList.contains('motion-on') && root.dataset.theme!=='light'
+      && root.classList.contains('motion-on')
       && (!compact || (innerHeight>=430 && (navigator.hardwareConcurrency||4)>=4 && (navigator.deviceMemory||4)>=3));
   }
   function disable() {
@@ -631,7 +629,7 @@
   }
 
   const watcher=new MutationObserver(sync);
-  watcher.observe(root,{attributes:true,attributeFilter:['class','data-theme']});
+  watcher.observe(root,{attributes:true,attributeFilter:['class']});
   const intersection=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{if(entry.isIntersecting) observed.add(entry.target); else observed.delete(entry.target);});
     nearby=observed.size>0;
